@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      - .:/app
+      - dependencies:/app/node_modules
+      - next-cache:/app/.next
+    command:
+      - sh
+      - -c
+      - npm ci && npm run dev -- --hostname 0.0.0.0
+
+volumes:
+  dependencies:
+  next-cache:

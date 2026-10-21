@@ -45,7 +45,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [isManualPaused, setIsManualPaused] = useState(false);
+
 
   const touchStartX = useRef<number | null>(null);
   const total = members.length;
@@ -72,9 +72,9 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     setCurrentIndex((prev) => (prev + 1) % total);
   }, [total]);
 
-  // Automatic rotation: comfortable 5s interval, paused on hover/focus/manual pause or reduced motion
+  // Automatic rotation: comfortable 5s interval, paused on hover/focus or reduced motion
   useEffect(() => {
-    if (isHovered || isFocused || isManualPaused || prefersReducedMotion || total <= 1) {
+    if (isHovered || isFocused || prefersReducedMotion || total <= 1) {
       return;
     }
 
@@ -83,7 +83,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isHovered, isFocused, isManualPaused, prefersReducedMotion, total, handleNext]);
+  }, [isHovered, isFocused, prefersReducedMotion, total, handleNext]);
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {

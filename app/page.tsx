@@ -4,20 +4,20 @@ import About from "@/components/meryem/About";
 import Team from "@/components/zeynep/Team";
 import Events from "@/components/gizem/Events";
 import Hero from "@/components/nisa/Hero";
+import SiteHeader from "@/components/nisa/SiteHeader";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 md:px-8">
+    <div className="min-h-screen bg-[#F5F3EC] text-[#171916]">
+      <SiteHeader />
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <About />
         <Events />
         <Team />
         <Contact />
       </main>
-      <footer className="mx-auto max-w-6xl px-4 pb-10 md:px-8">
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 }

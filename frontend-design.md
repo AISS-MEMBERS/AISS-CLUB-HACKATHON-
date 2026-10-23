@@ -641,6 +641,6 @@ Please follow these mandatory guidelines:
    - Typography: Bricolage Grotesque with tight tracking on headings
 3. AVOID generic AI/SaaS tropes: No purple gradients, no floating gradient orbs, no 3D robot figurines, no centered SaaS heroes, and no fake statistics.
 4. If this is the contact form, include the prominent notice that it is a demo simulation that sends and stores nothing.
-5. Use semantic HTML, accessible labels, visible focus rings, and TypeScript without any `any`.
+5. Use semantic HTML, accessible labels, visible focus rings, and TypeScript with5out any `any`.
 6. Explain your proposed changes step-by-step so I can learn, and tell me how to test them.
 ```

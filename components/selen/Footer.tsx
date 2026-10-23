@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import ReloadHomeLink from "@/components/shared/ReloadHomeLink";
 
 interface NavLink {
   readonly label: string;
@@ -19,13 +20,15 @@ export default function Footer() {
     <footer
       id="footer"
       aria-label="Site Footer"
-      className="scroll-mt-24 w-full rounded-2xl border border-[#262A24] bg-[#d8d9de] p-6 sm:p-8 md:p-12 text-[#1E2A5A] transition-colors"
+      className="w-full border-t border-[#DCDDD3] bg-[#d8d9de] py-10 text-[#1E2A5A] sm:py-14"
     >
+      <div className="site-container">
       {/* Top & Navigation Section */}
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         {/* Club Identity */}
         <div className="max-w-xl">
           <div className="flex items-center gap-3 sm:gap-4">
+            <ReloadHomeLink>
             <Image
               src="/students/selen/aiss-logo.png"
               alt="AISS Club Logo"
@@ -33,6 +36,7 @@ export default function Footer() {
               height={60}
               className="h-[45px] w-[45px] shrink-0 rounded-full object-contain md:h-[60px] md:w-[60px]"
             />
+            </ReloadHomeLink>
             <h2 className="text-xl font-bold tracking-tight text-[#1E2A5A] sm:text-2xl md:text-3xl">
               AISS — Yapay Zeka ve Akıllı Sistemler
             </h2>
@@ -82,6 +86,7 @@ export default function Footer() {
             &uarr;
           </span>
         </a>
+      </div>
       </div>
     </footer>
   );

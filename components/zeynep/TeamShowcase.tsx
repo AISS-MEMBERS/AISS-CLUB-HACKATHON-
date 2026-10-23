@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from '
 import { TeamMember } from './types';
 import { MemberCard } from './MemberCard';
 
+
 interface TeamShowcaseProps {
   members: TeamMember[];
 }
@@ -50,6 +51,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
   const touchStartX = useRef<number | null>(null);
   const total = members.length;
 
+
   const prefersReducedMotion = useSyncExternalStore(
     subscribeReducedMotion,
     getReducedMotionSnapshot,
@@ -72,9 +74,9 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     setCurrentIndex((prev) => (prev + 1) % total);
   }, [total]);
 
-  // Automatic rotation: comfortable 5s interval, paused on hover/focus or reduced motion
+  // Desktop auto rotation; mobile cards advance only through user interaction.
   useEffect(() => {
-    if (isHovered || isFocused || prefersReducedMotion || total <= 1) {
+    if (isMobile || isHovered || isFocused || prefersReducedMotion || total <= 1) {
       return;
     }
 
@@ -83,7 +85,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isHovered, isFocused, prefersReducedMotion, total, handleNext]);
+  }, [isMobile, isHovered, isFocused, prefersReducedMotion, total, handleNext]);
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {

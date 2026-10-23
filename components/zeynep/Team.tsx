@@ -12,9 +12,10 @@ export default function Team() {
   return (
     <section
       id="team"
-      className="scroll-mt-24 rounded-2xl border border-[#DCDDD3] bg-[#F5F3EC] p-6 text-[#171916] md:p-10 shadow-sm"
+      className="site-section text-[#171916]"
       aria-labelledby="team-section-heading"
     >
+      <div className="site-container">
       {/* 1. Section Header: "MEET OUR TEAM" Centered Above Showcase with Slide & Sweep Animations */}
       <style>{`
   @keyframes newsTickerScroll {
@@ -79,6 +80,7 @@ export default function Team() {
         </div>
 
         <FaqAccordion items={FAQ_ITEMS} />
+      </div>
       </div>
     </section>
   );

@@ -153,8 +153,9 @@ export default function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className="scroll-mt-24 rounded-2xl border border-[#DCDDD3] bg-[#F5F3EC] p-6 font-sans text-[#1E2A5A] shadow-sm md:p-10 lg:p-12"
+      className="site-section font-sans text-[#1E2A5A]"
     >
+      <div className="site-container">
       <div className="mb-8 flex flex-col items-center border-b border-[#DCDDD3] pb-6 md:mb-10">
         <div className="inline-flex items-center gap-2 rounded-full border border-[#DCDDD3] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#1E2A5A] shadow-2xs">
           <span className="h-1.5 w-1.5 rounded-full bg-[#1E2A5A]"></span>
@@ -184,7 +185,8 @@ export default function Contact() {
             <div className="space-y-3 pt-3">
               <div>
                 <a
-                  href="mailto:contact@aissclub.edu"
+                  href="mailto:yapayzekakulubu@st.uskudar.edu.tr
+"
                   className="group inline-flex items-center gap-3 rounded-lg text-sm text-[#1E2A5A] transition-colors hover:text-[#1E2A5A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#DCDDD3] bg-white text-[#77796F] transition-all group-hover:border-[#1E2A5A] group-hover:bg-[#FCFBF8] group-hover:text-[#1E2A5A]">
@@ -192,13 +194,13 @@ export default function Contact() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <span className="text-xs font-medium group-hover:underline">contact@aissclub.edu</span>
+                  <span className="text-xs font-medium group-hover:underline">yapayzekakulubu@st.uskudar.edu.tr</span>
                 </a>
               </div>
 
               <div>
                 <a
-                  href="https://github.com/aiss-club"
+                  href="https://github.com/AISSCLUB"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-3 rounded-lg text-sm text-[#1E2A5A] transition-colors hover:text-[#1E2A5A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
@@ -208,13 +210,13 @@ export default function Contact() {
                       <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                     </svg>
                   </div>
-                  <span className="text-xs font-medium group-hover:underline">github.com/aiss-club</span>
+                  <span className="text-xs font-medium group-hover:underline">github.com/AISSCLUB</span>
                 </a>
               </div>
 
               <div>
                 <a
-                  href="https://linkedin.com/company/aiss-club"
+                  href="https://www.linkedin.com/in/uuaissclub/?isSelfProfile=false"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-3 rounded-lg text-sm text-[#1E2A5A] transition-colors hover:text-[#1E2A5A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
@@ -224,7 +226,7 @@ export default function Contact() {
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75c.97 0 1.76.78 1.76 1.75s-.79 1.76-1.76 1.76m1.39 9.74v-8.37H5.07v8.37h2.78z" />
                     </svg>
                   </div>
-                  <span className="text-xs font-medium group-hover:underline">linkedin.com/company/aiss-club</span>
+                  <span className="text-xs font-medium group-hover:underline">linkedin.com/in/uuaissclub</span>
                 </a>
               </div>
 
@@ -522,6 +524,7 @@ export default function Contact() {
             )}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

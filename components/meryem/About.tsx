@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useSyncExternalStore } from "react";
+import { useMobileCardCarousel } from "@/components/shared/MobileCardCarousel";
 
 /**
  * Type contract for community statistics
@@ -130,10 +131,11 @@ export default function About() {
     () => false
   );
 
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const { trackRef: carouselRef, activeIndex: mobileIndex, goTo } =
+    useMobileCardCarousel<HTMLDivElement>(FOCUS_AREAS.length);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const effectiveCard = hoveredCard !== null ? hoveredCard : activeCard;
+  const effectiveCard = isMobile ? mobileIndex : hoveredCard !== null ? hoveredCard : activeCard;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
     if (prefersReducedMotion || isMobile) return;
@@ -151,37 +153,32 @@ export default function About() {
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setActiveCard(index);
+      scrollToCard(index);
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
       const next = (index + 1) % FOCUS_AREAS.length;
-      setActiveCard(next);
+      scrollToCard(next);
       cardRefs.current[next]?.focus();
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       const prev = (index - 1 + FOCUS_AREAS.length) % FOCUS_AREAS.length;
-      setActiveCard(prev);
+      scrollToCard(prev);
       cardRefs.current[prev]?.focus();
     }
   };
 
   const scrollToCard = (index: number) => {
     setActiveCard(index);
-    if (isMobile && cardRefs.current[index]) {
-      cardRefs.current[index]?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-    }
+    if (isMobile) goTo(index);
   };
 
   return (
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="scroll-mt-24 w-full rounded-2xl border border-[#E2E1DA] bg-[#F7F6F2] p-6 sm:p-10 lg:p-12 text-[#181A18] font-sans antialiased"
+      className="site-section text-[#181A18] font-sans antialiased"
     >
+      <div className="site-container">
       {/* ------------------------------------------------------------------ */}
       {/* 1. Centered Intro: Strong Navy Heading & Balanced Typography        */}
       {/* ------------------------------------------------------------------ */}
@@ -194,11 +191,11 @@ export default function About() {
         >
           {/* Subtle edge gradient dissolves for broadcast ticker look */}
           <div
-            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 sm:w-20 bg-gradient-to-r from-[#F7F6F2] to-transparent"
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 sm:w-20 bg-gradient-to-r from-[#F5F3EC] to-transparent"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 sm:w-20 bg-gradient-to-l from-[#F7F6F2] to-transparent"
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 sm:w-20 bg-gradient-to-l from-[#F5F3EC] to-transparent"
             aria-hidden="true"
           />
 
@@ -356,7 +353,7 @@ export default function About() {
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseMove={(e) => handleMouseMove(e, index)}
                 onMouseLeave={handleMouseLeave}
-                onFocus={() => setActiveCard(index)}
+                onFocus={() => scrollToCard(index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 style={{
                   transform: transformStyle,
@@ -409,22 +406,6 @@ export default function About() {
           })}
         </div>
 
-        {/* Mobile Navigation Dots */}
-        <div
-          className="flex md:hidden justify-center items-center gap-2 mt-3"
-          aria-hidden="true"
-        >
-          {FOCUS_AREAS.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => scrollToCard(i)}
-              aria-label={`View card ${i + 1}`}
-              className={`h-2 rounded-full transition-all duration-300 ${effectiveCard === i ? "w-6 bg-[#1E2A5A]" : "w-2 bg-[#E2E1DA]"
-                }`}
-            />
-          ))}
-        </div>
       </div>
 
       {/* ------------------------------------------------------------------ */}
@@ -488,6 +469,7 @@ export default function About() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

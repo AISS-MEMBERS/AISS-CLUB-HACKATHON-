@@ -1,5 +1,6 @@
 import FeaturedSessionCard from "./FeaturedSessionCard";
 import TimelineEventCard from "./TimelineEventCard";
+import MobileCardCarousel from "@/components/shared/MobileCardCarousel";
 
 interface ClubEvent {
   id: string;
@@ -72,8 +73,9 @@ export default function Events() {
     <section
       id="events"
       aria-labelledby="events-heading"
-      className="scroll-mt-24 rounded-2xl border border-[#DCDDD3] bg-[#F5F3EC] p-6 text-[#1E2A5A] md:p-10 shadow-sm"
+      className="site-section text-[#1E2A5A]"
     >
+      <div className="site-container">
       {/* 1. SECTION HEADER (frontend-design.md Section 11.1) */}
       <header className="mb-8 border-b border-[#DCDDD3] pb-6 md:mb-10">
         <h2
@@ -122,9 +124,9 @@ export default function Events() {
           </span>
         </div>
 
-        <ol
-          tabIndex={0}
-          aria-label="Semester timeline events"
+        <MobileCardCarousel
+          count={TIMELINE_EVENTS.length}
+          label="Semester timeline events"
           className="relative flex items-stretch gap-6 overflow-x-auto pb-6 pt-4 px-4 sm:px-6 scroll-smooth snap-x snap-mandatory focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
         >
           {TIMELINE_EVENTS.map((event, index) => {
@@ -159,7 +161,8 @@ export default function Events() {
               </li>
             );
           })}
-        </ol>
+        </MobileCardCarousel>
+      </div>
       </div>
     </section>
   );

@@ -5,6 +5,49 @@ Required working branch: student/selen
 Install path: docs/backend/SELEN-BACKEND-FOUNDATION.md
 Issued by Mohamad Barakat for the AISS backend workshop, 26 October 2026.
 
+## Required Supabase setup kit - read this before coding
+
+Mohamad has supplied a shared database baseline at docs/backend/supabase-setup/.
+This addition is part of your foundation assignment. Read its README.md first.
+The kit is reference/setup material, not a second competing backend implementation.
+
+### Exact work order
+
+1. Inspect your current branch, AGENTS.md, existing migrations, existing Supabase client files and the current development database, if already configured. Do not assume the database is empty.
+2. Coordinate one separate AISS development Supabase project with Mohamad. He owns account creation, credentials, paid resources and external changes. Do not create or modify any InternMatch or VERTEX project.
+3. Use docs/backend/supabase-setup/README.md for the dashboard settings: password Auth, public signups off, no anonymous sign-ins, correct local Site URL/Origin and manually created development accounts.
+4. Decide and document ONE schema ownership path with Mohamad:
+   - NEW database and classroom SQL Editor setup: apply 01-bootstrap-development.sql once, then reconcile it into the repository's migration baseline using the current Supabase tooling. Do not run a create-tables migration over the same already-created tables.
+   - Existing database/migrations: compare the supplied baseline against what exists. Create an additive, reviewed migration for missing pieces. Do not reset, drop tables, overwrite student work or rerun bootstrap blindly.
+5. After Auth users exist, Mohamad fills and runs 02-grant-admins.sql privately. Account membership is assigned by a privileged operator, not public signup or an API that lets users promote themselves.
+6. Run 03-demo-fixtures.sql only against the development project. Run 04-inspect-security.sql and verify table privileges/RLS. SQL Editor's privileged view is not proof of browser access.
+7. Copy the kit's env.supabase.example to the project root as .env.local only if a real file does not exist; otherwise merge variable names without overwriting existing values. Keep all real values private and ignored by Git.
+8. The kit's compose.supabase.yaml is a reference development override. Copy it to the root if no conflicting file exists, then start with BOTH compose files. Alternatively, integrate equivalent env_file wiring into compose.yaml under your approved ownership; choose one approach, not two inconsistent launch commands.
+9. Install the compatible pinned SDKs once if missing. Do not upgrade existing compatible SDKs without checking the lockfile and coordinating with Mohamad.
+10. Implement the actual shared clients, DTOs, requireAdmin, errors/request helpers, login/logout, protected layout and persistent rate limits from the rest of this assignment. The SQL kit does NOT implement these application features or the rate-limit store.
+11. Run the read-only Test-AissSupabase.ps1 from the project root, then test real admin and non-admin sessions through the application.
+12. Hand off your reviewed foundation commit and the exact shared export list to Mohamad. The other branches must receive that foundation before their code can pass real integration tests.
+
+### Kit-specific rules
+
+- You may maintain docs/backend/supabase-setup/ as reference material for your foundation task. Do not change other students' task contracts.
+- No script in this kit runs automatically when someone pulls the branch. Installation only adds documentation/templates/scripts to Git; it never connects to Supabase or executes SQL.
+- Keep the supplied SQL as the agreed baseline; any schema contract change must be coordinated with Zeynep, Yagmur, Nisa and Mohamad.
+- Never commit a completed .env.local, real API keys, passwords, access tokens or the filled-in admin-email SQL.
+- Keep live configuration separate from the tracked templates. Do not put secrets into Docker build arguments.
+- Anonymous contact inserts are intentionally denied. Do not weaken RLS to make Yagmur's form work; provide the server-only client and required validation/limit helpers.
+- Admin message updates are intentionally limited to status. Do not grant arbitrary message-text edits.
+- If credentials or dashboard access are unavailable, continue independent code work and clearly report the live setup blocker. Do not report a successful DB connection, policy check or email delivery that you have not performed.
+
+### Required handoff evidence
+
+Report:
+- whether this was a new or existing development database and which baseline/migration path was used;
+- table/policy/grant checks, public published-event visibility and hidden-draft/message tests;
+- 401 without a session, 403 for a real non-admin, and success for an authorized development admin;
+- environment variable NAMES only, the chosen Compose launch command, and the module imports the other students should use;
+- migration files, shared helpers, SDK/lockfile changes, actual test results and remaining blockers.
+
 ## Start here - instructions to the coding agent
 
 1. Read this entire file, AGENTS.md, package.json and the relevant existing source files.

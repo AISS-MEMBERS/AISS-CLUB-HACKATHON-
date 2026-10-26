@@ -37,10 +37,39 @@ Mohamad or Selen reviews integration.
 Do not push directly to main.
 Do not force push or discard another person's changes.
 
-## First version
-No database, email integration, or real form submission.
-Never store submissions in local JSON or print personal data to logs.
-The demo contact form must clearly say that nothing is sent or saved.
+## Backend phase - approved by Mohamad
+
+<!-- AISS-BACKEND-PHASE-2026-10-26 -->
+The initial ban on databases, email integration and real form submission
+is superseded only for the backend assignments in docs/backend/.
+These assignments authorize the following temporary ownership:
+
+- Selen: shared backend types, lib/backend/shared/, lib/backend/auth/,
+  lib/supabase/, app/login/, app/api/auth/, app/admin/layout.tsx,
+  proxy.ts if required, and supabase/migrations/.
+  Selen may coordinate pinned dependency and lockfile updates,
+  .env.example and runtime environment wiring in compose.yaml.
+- Zeynep: lib/backend/events/, app/api/events/, app/api/admin/events/,
+  and the existing event components in components/gizem/ listed
+  in her backend assignment.
+- Yagmur: lib/backend/contact/, lib/backend/email/, app/api/contact/,
+  app/api/admin/messages/, and components/yagmur/Contact.tsx.
+- Nisa: components/admin/, app/admin/page.tsx, app/admin/events/,
+  app/admin/messages/, app/admin/loading.tsx and app/admin/error.tsx.
+  app/admin/layout.tsx remains Selen's responsibility.
+
+Each student follows her own backend assignment and its frozen contracts.
+This phase overrides conflicting initial frontend-only task restrictions
+only within the explicitly assigned paths. All other ownership remains.
+
+Use a separate AISS development database and synthetic test data.
+Mohamad controls credentials, account creation, paid resources,
+production migrations, live email activation and deployment.
+Never commit secrets, expose server keys, store submissions in local JSON,
+or log personal data. Validate input and enforce authorization and RLS.
+Do not replace missing services with fake successful submissions.
+Do not automatically commit, push, merge, force push or deploy.
+<!-- END-AISS-BACKEND-PHASE-2026-10-26 -->
 
 ## Quality
 Use semantic HTML, accessible labels, and keyboard support.

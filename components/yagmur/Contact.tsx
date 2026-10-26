@@ -34,6 +34,7 @@ export default function Contact() {
   });
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const nameId = useId();
   const emailId = useId();
@@ -44,15 +45,18 @@ export default function Contact() {
   const interestErrorId = useId();
   const messageErrorId = useId();
   const confirmLiveId = useId();
+  const submitErrorId = useId();
 
   const validateField = (name: keyof ContactFormData, value: string): string | undefined => {
     switch (name) {
       case "fullName":
         if (!value.trim()) return "Please enter your full name.";
         if (value.trim().length < 2) return "Full name must be at least 2 characters.";
+        if (value.trim().length > 100) return "Full name cannot exceed 100 characters.";
         return undefined;
       case "universityEmail":
         if (!value.trim()) return "Please enter your university email.";
+        if (value.trim().length > 254) return "Email address cannot exceed 254 characters.";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
           return "Please enter a valid university email address (e.g. name@university.edu).";
         }
@@ -65,6 +69,7 @@ export default function Contact() {
       case "message":
         if (!value.trim()) return "Please enter your message.";
         if (value.trim().length < 10) return "Message must be at least 10 characters.";
+        if (value.trim().length > 3000) return "Message cannot exceed 3000 characters.";
         return undefined;
       default:
         return undefined;
@@ -96,8 +101,9 @@ export default function Contact() {
     setErrors((prev) => ({ ...prev, [fieldName]: error }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitError(null);
 
     const newErrors: FormErrors = {
       fullName: validateField("fullName", formData.fullName),
@@ -131,10 +137,35 @@ export default function Contact() {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const resJson = await response.json();
+
+      if (response.ok && resJson.success) {
+        setIsSubmitted(true);
+      } else {
+        if (resJson?.error?.fieldErrors) {
+          setErrors((prev) => ({ ...prev, ...resJson.error.fieldErrors }));
+        }
+        setSubmitError(
+          resJson?.error?.message || "Failed to submit message. Please try again."
+        );
+      }
+    } catch {
+      setSubmitError(
+        "Network error: Could not connect to the server. Please check your connection and try again."
+      );
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 400);
+    }
   };
 
   const handleReset = () => {
@@ -146,6 +177,7 @@ export default function Contact() {
       areaOfInterest: false,
       message: false,
     });
+    setSubmitError(null);
     setIsSubmitted(false);
   };
 
@@ -185,8 +217,7 @@ export default function Contact() {
             <div className="space-y-3 pt-3">
               <div>
                 <a
-                  href="mailto:yapayzekakulubu@st.uskudar.edu.tr
-"
+                  href="mailto:yapayzekakulubu@st.uskudar.edu.tr"
                   className="group inline-flex items-center gap-3 rounded-lg text-sm text-[#1E2A5A] transition-colors hover:text-[#1E2A5A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#DCDDD3] bg-white text-[#77796F] transition-all group-hover:border-[#1E2A5A] group-hover:bg-[#FCFBF8] group-hover:text-[#1E2A5A]">
@@ -285,10 +316,10 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-[#1E2A5A]">
-                    Demo Submission Received
+                    Message Received
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-[#77796F]">
-                    Thank you for trying our contact form! This is a training demo, so your message has not been sent or saved.
+                    Thank you for contacting the AISS Club! Your message has been saved for our core team. We review incoming messages daily.
                   </p>
                 </div>
                 <div className="pt-2">
@@ -308,6 +339,22 @@ export default function Contact() {
                 className="flex flex-1 flex-col justify-between space-y-6"
               >
                 <div className="space-y-5">
+                  {submitError && (
+                    <div
+                      id={submitErrorId}
+                      role="alert"
+                      aria-live="assertive"
+                      className="flex items-start gap-3 rounded-lg border border-[#F0784B] bg-[#FFF5F2] p-4 text-xs font-medium text-[#F0784B]"
+                    >
+                      <svg className="h-4 w-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <div className="flex-1 leading-relaxed">
+                        {submitError}
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <div className="flex items-center justify-between">
                       <label
@@ -460,7 +507,7 @@ export default function Contact() {
                         Message <span className="text-[#F0784B]" aria-hidden="true">*</span>
                       </label>
                       <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">
-                        {formData.message.length} / 500
+                        {formData.message.length} / 3000
                       </span>
                     </div>
                     <div className="mt-1.5">
@@ -468,7 +515,7 @@ export default function Contact() {
                         id={messageId}
                         name="message"
                         rows={6}
-                        maxLength={500}
+                        maxLength={3000}
                         required
                         aria-required="true"
                         aria-invalid={touched.message && Boolean(errors.message)}

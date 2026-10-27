@@ -3,18 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import EventCountdown from "./EventCountdown";
+import { ClubEvent } from "@/lib/backend/events/types";
+import {
+  computeEventStatus,
+  formatDisplayDate,
+  formatDisplayTime,
+} from "@/lib/backend/events/mappers";
 
-export interface ClubEvent {
-  id: string;
-  title: string;
-  date: string;
-  time?: string;
-  location?: string;
-  lead?: string;
-  category: "WORKSHOP" | "TALK" | "BUILD SESSION";
-  description: string;
-  status: "upcoming" | "past";
-}
+export type { ClubEvent };
 
 interface FeaturedSessionCardProps {
   event: ClubEvent;
@@ -22,6 +18,13 @@ interface FeaturedSessionCardProps {
 
 export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const isUpcoming =
+    computeEventStatus(event.startsAt, event.endsAt) === "upcoming";
+  const displayDate = formatDisplayDate(event.startsAt);
+  const displayTime = formatDisplayTime(event.startsAt, event.endsAt);
+  const imageSrc =
+    event.imagePath || "/students/gizem/transformer-architecture.jpg";
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-[#DCDDD3] bg-[#1E2A5A] p-6 shadow-md transition-transform duration-300 ease-out origin-center [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-10 md:p-8">
@@ -42,17 +45,17 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
         }
       `}</style>
 
-      {/* Background Image: Transformer Neural Network Architecture Schematic */}
+      {/* Background Image */}
       <Image
-        src="/students/gizem/transformer-architecture.jpg"
-        alt="Transformer neural network architecture schematic diagram"
+        src={imageSrc}
+        alt={`${event.title} presentation graphic`}
         fill
         priority
         className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1100px"
       />
 
-      {/* Subtle Navy / Dark Overlay — Kept subtle so the Transformer architecture schematic is clearly visible */}
+      {/* Subtle Navy / Dark Overlay — Kept subtle so the graphic is clearly visible */}
       <div
         className="absolute inset-0 bg-[#0E1530]/50 backdrop-blur-[0.5px]"
         aria-hidden="true"
@@ -62,18 +65,24 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
         aria-hidden="true"
       />
 
-      {/* TOP AREA: Category and Navy UPCOMING status (Date, Time, Countdown moved into expanded section) */}
+      {/* TOP AREA: Category and Status badge */}
       <div className="relative z-10 flex flex-wrap items-center gap-2.5 border-b border-white/20 pb-4">
         <span className="inline-flex items-center rounded-md border border-white/30 bg-[#1E2A5A]/90 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm shadow-sm">
           {event.category}
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1E2A5A] border border-white/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
-          <span
-            className="inline-block h-2 w-2 rounded-full bg-white animate-subtle-dot"
-            aria-hidden="true"
-          />
-          UPCOMING
-        </span>
+        {isUpcoming ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1E2A5A] border border-white/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+            <span
+              className="inline-block h-2 w-2 rounded-full bg-white animate-subtle-dot"
+              aria-hidden="true"
+            />
+            UPCOMING
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded-full bg-[#1E2A5A]/80 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-200 shadow-sm backdrop-blur-sm">
+            ARCHIVED
+          </span>
+        )}
       </div>
 
       {/* MIDDLE AREA: Prominent Event Title (Always visible) */}
@@ -106,15 +115,22 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span className="font-semibold text-white tracking-wide">{event.date}</span>
-              {event.time && (
+              <span className="font-semibold text-white tracking-wide">
+                {displayDate}
+              </span>
+              {displayTime && (
                 <>
-                  <span className="text-white/40" aria-hidden="true">•</span>
-                  <span className="text-slate-200">{event.time}</span>
+                  <span className="text-white/40" aria-hidden="true">
+                    •
+                  </span>
+                  <span className="text-slate-200">{displayTime}</span>
                 </>
               )}
             </div>
-            <EventCountdown date={event.date} time={event.time} />
+            <EventCountdown
+              startDate={event.startsAt}
+              endDate={event.endsAt ?? undefined}
+            />
           </div>
 
           {/* 2. Complete Event Description */}
@@ -203,13 +219,20 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
         >
           <span>{isExpanded ? "Show less" : "Show more"}</span>
           <svg
-            className={`h-4 w-4 text-white transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+            className={`h-4 w-4 text-white transition-transform duration-200 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             aria-hidden="true"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
       </div>

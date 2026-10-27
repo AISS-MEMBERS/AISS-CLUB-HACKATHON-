@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 
 interface EventCountdownProps {
-  date: string;
+  date?: string;
   time?: string;
   startDate?: Date | string | number;
   endDate?: Date | string | number;
   className?: string;
 }
 
-function parseEventDates(dateStr: string, timeStr?: string): { start: Date; end: Date } {
+function parseEventDates(dateStr: string = "", timeStr?: string): { start: Date; end: Date } {
   const months: Record<string, number> = {
     JAN: 0,
     FEB: 1,

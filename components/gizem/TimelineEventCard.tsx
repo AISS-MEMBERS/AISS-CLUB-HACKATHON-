@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ClubEvent } from "./FeaturedSessionCard";
+import { ClubEvent } from "@/lib/backend/events/types";
+import {
+  computeEventStatus,
+  formatDisplayDate,
+  formatDisplayTime,
+} from "@/lib/backend/events/mappers";
 
 interface TimelineEventCardProps {
   event: ClubEvent;
@@ -44,14 +49,18 @@ export default function TimelineEventCard({
   isFirst = false,
 }: TimelineEventCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const isUpcoming = event.status === "upcoming";
-  const bgImage = getTimelineImage(event.id);
+  const isUpcoming =
+    computeEventStatus(event.startsAt, event.endsAt) === "upcoming";
+  const displayDate = formatDisplayDate(event.startsAt);
+  const displayTime = formatDisplayTime(event.startsAt, event.endsAt);
+  const bgImageSrc = event.imagePath || getTimelineImage(event.id).src;
   const hasDetails = Boolean(event.location || event.lead);
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${isFirst ? "origin-left" : "origin-center"
-        }`}
+      className={`group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${
+        isFirst ? "origin-left" : "origin-center"
+      }`}
     >
       {/* Scoped CSS for the subtle pulse animation matching FeaturedSessionCard */}
       <style>{`
@@ -72,8 +81,8 @@ export default function TimelineEventCard({
 
       {/* Background Image: Specific to event topic */}
       <Image
-        src={bgImage.src}
-        alt={bgImage.alt}
+        src={bgImageSrc}
+        alt={`${event.title} session background`}
         fill
         className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         sizes="(max-width: 640px) 300px, 350px"
@@ -131,11 +140,13 @@ export default function TimelineEventCard({
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span>{event.date}</span>
-              {event.time && (
+              <span>{displayDate}</span>
+              {displayTime && (
                 <>
-                  <span className="text-white/40" aria-hidden="true">•</span>
-                  <span className="font-normal text-slate-200">{event.time}</span>
+                  <span className="text-white/40" aria-hidden="true">
+                    •
+                  </span>
+                  <span className="font-normal text-slate-200">{displayTime}</span>
                 </>
               )}
             </span>
@@ -219,8 +230,9 @@ export default function TimelineEventCard({
             >
               <span>{isExpanded ? "Show less" : "Show more"}</span>
               <svg
-                className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
-                  }`}
+                className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

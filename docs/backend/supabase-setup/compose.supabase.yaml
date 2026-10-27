@@ -1,0 +1,6 @@
+# Local development override, no secrets.
+# Run with BOTH files: docker compose -f compose.yaml -f compose.supabase.yaml up --build -d
+services:
+  web:
+    env_file:
+      - .env.local

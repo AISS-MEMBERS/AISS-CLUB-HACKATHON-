@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import EventCoverPicker from "./EventCoverPicker";
 import {
-  APPROVED_EVENT_IMAGES,
   ClubEvent,
   EventCategory,
   EventWriteInput,
@@ -49,6 +49,7 @@ export default function EventFormModal({
 
   // Form submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -56,6 +57,7 @@ export default function EventFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isUploading || isSubmitting) return;
     setGeneralError(null);
     setFieldErrors({});
 
@@ -304,30 +306,8 @@ export default function EventFormModal({
             </div>
           </div>
 
-          {/* Image dropdown (Approved existing images only) */}
-          <div>
-            <label htmlFor="event-image" className="block text-xs font-bold uppercase text-stone-700">
-              Etkinlik Görseli (Onaylı Varlıklar)
-            </label>
-            <select
-              id="event-image"
-              value={imagePath}
-              onChange={(e) => setImagePath(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-[#DCDDD3] bg-white px-3 py-2 text-sm text-[#171916] focus:border-[#1E2A5A] focus:outline-hidden focus:ring-1 focus:ring-[#1E2A5A]"
-            >
-              {APPROVED_EVENT_IMAGES.map((img) => (
-                <option key={img.value} value={img.value}>
-                  {img.label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs text-stone-500">
-              Sözleşme gereği dış bağlantı veya dosya yükleme desteklenmez; sadece onaylı kulüp görselleri seçilebilir.
-            </p>
-            {fieldErrors.imagePath && (
-              <p className="mt-1 text-xs text-rose-600">{fieldErrors.imagePath}</p>
-            )}
-          </div>
+          <EventCoverPicker value={imagePath} onChange={setImagePath} onBusyChange={setIsUploading} />
+          {fieldErrors.imagePath && <p role="alert" className="text-sm text-rose-600">{fieldErrors.imagePath}</p>}
 
           {/* Publication Status & Featured Flag */}
           <div className="grid gap-4 rounded-lg border border-[#DCDDD3] bg-[#F5F3EC]/50 p-4 sm:grid-cols-2">
@@ -373,14 +353,14 @@ export default function EventFormModal({
             <button
               type="button"
               onClick={onClose}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="rounded-md border border-[#DCDDD3] bg-white px-4 py-2 text-sm font-semibold text-stone-700 shadow-2xs hover:bg-[#F5F3EC] disabled:opacity-50"
             >
               İptal
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="rounded-md bg-[#1E2A5A] px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-[#2b3c7d] disabled:opacity-50"
             >
               {isSubmitting ? "Kaydediliyor..." : isEditing ? "Değişiklikleri Kaydet" : "Etkinliği Oluştur"}

@@ -1,0 +1,63 @@
+name: AISS Supabase Heartbeat
+
+on:
+  schedule:
+    # UTC: 06:17 and 18:17 = 09:17 and 21:17 in Europe/Istanbul.
+    - cron: '17 6,18 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: aiss-supabase-heartbeat
+  cancel-in-progress: false
+
+jobs:
+  heartbeat:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Query the public events table
+        env:
+          AISS_SUPABASE_URL: ${{ vars.AISS_SUPABASE_URL }}
+          AISS_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.AISS_SUPABASE_PUBLISHABLE_KEY }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, sys, time
+          import urllib.error, urllib.parse, urllib.request
+
+          raw_url = os.environ.get('AISS_SUPABASE_URL', '').strip()
+          key = os.environ.get('AISS_SUPABASE_PUBLISHABLE_KEY', '').strip()
+          url = urllib.parse.urlsplit(raw_url)
+          if (url.scheme != 'https' or not url.hostname or
+              not url.hostname.endswith('.supabase.co') or url.username or url.password or
+              url.port not in (None,443) or url.path not in ('','/') or url.query or url.fragment):
+              sys.exit('::error::Set repository variable AISS_SUPABASE_URL to the AISS project HTTPS URL.')
+          if not key.startswith('sb_publishable_'):
+              try:
+                  payload = key.split('.')[1]
+                  claims = json.loads(base64.urlsafe_b64decode(payload + '=' * (-len(payload) % 4)))
+                  if claims.get('role') != 'anon': raise ValueError()
+              except Exception:
+                  sys.exit('::error::Set AISS_SUPABASE_PUBLISHABLE_KEY. Never use a server/secret key for heartbeat.')
+
+          # One bounded read, no writes, no Auth users or private messages.
+          endpoint = raw_url.rstrip('/') + '/rest/v1/events?select=id&publication_status=eq.published&limit=1'
+          for attempt in range(3):
+              try:
+                  request = urllib.request.Request(endpoint, headers={'apikey':key, 'Accept':'application/json'})
+                  with urllib.request.urlopen(request,timeout=20) as response:
+                      data = json.loads(response.read(8192))
+                      if response.status != 200 or not isinstance(data,list): raise ValueError()
+                  print('AISS_SUPABASE_HEARTBEAT=PASS')
+                  break
+              except urllib.error.HTTPError as error:
+                  print('Heartbeat attempt failed: HTTP ' + str(error.code))
+              except Exception:
+                  print('Heartbeat attempt failed: connection or invalid API response.')
+              if attempt == 2:
+                  sys.exit('::error::Supabase heartbeat failed. Check project status, Data API, and repository configuration.')
+              time.sleep(3 * (attempt + 1))
+          PY

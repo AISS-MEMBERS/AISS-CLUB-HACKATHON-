@@ -1,3 +1,4 @@
+import { coverObjectName, COVER_BUCKET } from "@/lib/event-covers";
 import "server-only";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 /**
@@ -12,6 +13,20 @@ import { mapPatchInputToRow, mapRowToClubEvent, mapWriteInputToRow } from "./map
 import { ClubEvent, EventPatchInput, EventRow, EventWriteInput, PaginatedEvents } from "./types";
 
 const getSupabaseClient = createServerSupabaseClient;
+
+async function verifyCover(path: string | null | undefined): Promise<void> {
+  if (!path) return;
+  const name = coverObjectName(path);
+  if (!name) return; // The pure payload validator already restricts suggested local assets.
+  const [folder, filename] = name.split("/");
+  const client = await getSupabaseClient();
+  const { data, error } = await client.storage.from(COVER_BUCKET).list(folder, { search: filename, limit: 2 });
+  if (error) throw new ApiError(503, "STORAGE_UNAVAILABLE", "Unable to verify the event cover.");
+  if (!data?.some(item => item.name === filename)) {
+    throw new ApiError(400, "INVALID_COVER", "Upload the cover before saving the event.", { imagePath: "Cover not found." });
+  }
+}
+
 
 /**
  * Public: Fetches published events only, with deterministic ordering (startsAt asc, id asc)
@@ -108,6 +123,7 @@ export async function createAdminEvent(
     }
   }
 
+  await verifyCover(input.imagePath);
   const rowPayload = mapWriteInputToRow(input);
 
   const { data, error } = await client
@@ -204,6 +220,7 @@ export async function updateAdminEvent(
   }
 
   // 3. Map patch to row columns and update
+  await verifyCover(patch.imagePath);
   const rowPatch = mapPatchInputToRow(patch);
 
   const { data: updated, error: updateError } = await client

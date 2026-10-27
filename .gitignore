@@ -48,4 +48,5 @@ next-env.d.ts
 coverage/
 *.log
 Thumbs.db
+supabase/.temp/
 *.tsbuildinfo

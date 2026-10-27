@@ -15,7 +15,11 @@ export function publicSupabaseConfig() {
 }
 
 export function appOrigin(): string {
-  const value = process.env.APP_ORIGIN;
+  // APP_ORIGIN is explicit locally. Vercel's trusted system variable provides
+  // the stable production origin on the first deployment when no override exists.
+  const value = process.env.APP_ORIGIN || (process.env.VERCEL === "1" &&
+    process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined);
   try {
     if (!value) throw new Error();
     const url = new URL(value);

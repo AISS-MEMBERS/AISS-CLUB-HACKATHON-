@@ -1,3 +1,4 @@
+import { coverObjectName } from "@/lib/event-covers";
 import {
   EventCategory,
   EventPatchInput,
@@ -248,9 +249,10 @@ export function validateEventWriteInput(
     if (typeof record.imagePath !== "string") {
       fieldErrors.imagePath = "imagePath must be a string or null.";
     } else if (
-      !ALLOWED_EVENT_IMAGES.includes(record.imagePath as AllowedEventImage)
+      !ALLOWED_EVENT_IMAGES.includes(record.imagePath as AllowedEventImage) &&
+      !coverObjectName(record.imagePath)
     ) {
-      fieldErrors.imagePath = `imagePath must be null or an existing allowed asset: ${ALLOWED_EVENT_IMAGES.join(", ")}.`;
+      fieldErrors.imagePath = `Choose a suggested image or upload a cover from your device.`;
     }
   }
 
@@ -443,11 +445,12 @@ export function validateEventPatchInput(
     } else if (typeof record.imagePath !== "string") {
       fieldErrors.imagePath = "imagePath must be a string or null.";
     } else if (
-      !ALLOWED_EVENT_IMAGES.includes(record.imagePath as AllowedEventImage)
+      !ALLOWED_EVENT_IMAGES.includes(record.imagePath as AllowedEventImage) &&
+      !coverObjectName(record.imagePath)
     ) {
-      fieldErrors.imagePath = `imagePath must be null or an existing allowed asset: ${ALLOWED_EVENT_IMAGES.join(", ")}.`;
+      fieldErrors.imagePath = `Choose a suggested image or upload a cover from your device.`;
     } else {
-      cleanedData.imagePath = record.imagePath as AllowedEventImage;
+      cleanedData.imagePath = record.imagePath;
     }
   }
 

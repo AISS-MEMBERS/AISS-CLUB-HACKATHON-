@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import ReloadHomeLink from "@/components/shared/ReloadHomeLink";
 
 interface NavLink {
@@ -8,11 +9,12 @@ interface NavLink {
 }
 
 const NAV_LINKS: readonly NavLink[] = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Events", href: "#events" },
-  { label: "Team", href: "#team" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Events", href: "/#events" },
+  { label: "Team", href: "/#team" },
+  { label: "Contact", href: "/#contact" },
+  { label: "Join the Club", href: "/join" },
 ] as const;
 
 export default function Footer() {
@@ -52,12 +54,12 @@ export default function Footer() {
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
                   className="inline-flex min-h-[44px] items-center text-[#1E2A5A] transition-colors duration-300 hover:text-[#4169E1] focus-visible:text-[#4169E1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4169E1] focus-visible:ring-offset-2 focus-visible:ring-offset-[#171916] rounded-sm"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -73,8 +75,8 @@ export default function Footer() {
           &copy; 2026 AISS Club. All rights reserved.
         </p>
 
-        <a
-          href="#home"
+        <Link
+          href="/#home"
           aria-label="Back to top of page"
           className="group inline-flex min-h-[44px] items-center gap-1.5 text-[#1E2A5A] transition-colors duration-300 hover:text-[#4169E1] focus-visible:text-[#4169E1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4169E1] focus-visible:ring-offset-2 focus-visible:ring-offset-[#171916] rounded-sm"
         >
@@ -85,7 +87,7 @@ export default function Footer() {
           >
             &uarr;
           </span>
-        </a>
+        </Link>
       </div>
       </div>
     </footer>

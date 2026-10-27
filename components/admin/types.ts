@@ -4,7 +4,7 @@ export type { PaginatedResult as PaginatedList } from "@/types/backend";
 
 /**
  * Approved event images in /students/gizem/
- * Arbitrary upload or external URLs are prohibited by frozen contract.
+ * Custom covers use the authenticated upload endpoint; arbitrary remote URLs remain disallowed.
  */
 export const APPROVED_EVENT_IMAGES = [
   { label: "Görsel Yok (None)", value: "" },

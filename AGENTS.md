@@ -71,6 +71,23 @@ Do not replace missing services with fake successful submissions.
 Do not automatically commit, push, merge, force push or deploy.
 <!-- END-AISS-BACKEND-PHASE-2026-10-26 -->
 
+## Production media and membership phase — approved by Mohamad, 27 October 2026
+
+The original event-image allowlist-only constraint is superseded for this release.
+Preserve the suggested images and allow administrator-selected covers through
+POST /api/admin/event-covers. Covers are decoded, bounded and re-encoded to JPEG,
+stored in the event-covers bucket with admin-only INSERT/SELECT policies, and
+referenced by validated /api/event-covers/<user-uuid>/<image-uuid>.jpg paths.
+No arbitrary remote image URLs, SVG uploads, public writes or Storage upserts.
+Photos in this public marketing bucket are publicly readable, including unused uploads.
+Keep immutable object names; only remove unused objects through the Storage API/dashboard.
+The /join guide links to official university registration; never collect university passwords.
+Production email uses the existing Resend notification adapter and a verified sender.
+Keep all real credentials in local/env-provider configuration. Do not commit them.
+The main-only GitHub heartbeat makes bounded public event reads twice daily.
+Use only a publishable/anon key, never service credentials or private member data.
+It is a best-effort activity/availability check, not a guarantee against Free-plan pausing.
+
 ## Quality
 Use semantic HTML, accessible labels, and keyboard support.
 Test narrow and wide screens.

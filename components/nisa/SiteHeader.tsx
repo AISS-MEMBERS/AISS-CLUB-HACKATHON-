@@ -2,13 +2,14 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Events", href: "#events" },
-  { label: "Team", href: "#team" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Events", href: "/#events" },
+  { label: "Team", href: "/#team" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export default function SiteHeader() {
@@ -33,11 +34,12 @@ export default function SiteHeader() {
       </a>
       <nav aria-label="Main navigation" className="relative">
         <div className="site-container flex h-20 items-center justify-between gap-4">
-          <a
-            href="#home"
+          <Link
+            href="/"
             aria-label="AISS Club home"
             onClick={(event) => {
               if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              if (window.location.pathname !== "/") return;
               event.preventDefault();
               window.history.scrollRestoration = "manual";
               window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
@@ -52,11 +54,11 @@ export default function SiteHeader() {
               height={64}
               className="h-14 w-14 rounded-full object-contain sm:h-16 sm:w-16"
             />
-            <span className="text-base font-extrabold tracking-tight sm:text-lg">
+            <span className="hidden text-base font-extrabold sm:block tracking-tight sm:text-lg">
               AISS CLUB
             </span>
-          </a>
-          <div className="hidden items-center gap-6 md:flex lg:gap-9">
+          </Link>
+          <div className="hidden items-center gap-6 lg:flex lg:gap-6">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -67,6 +69,8 @@ export default function SiteHeader() {
               </a>
             ))}
           </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+          <Link href="/join" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-md bg-[#1E2A5A] px-3 text-xs font-bold text-white hover:bg-[#2b3c7d] focus-visible:outline-2 focus-visible:outline-offset-4 sm:px-4 sm:text-sm">Join the Club</Link>
           <button
             ref={toggleRef}
             type="button"
@@ -74,17 +78,18 @@ export default function SiteHeader() {
             aria-controls="mobile-navigation"
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             onClick={() => setMobileMenuOpen((open) => !open)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-[#DCDDD3]/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E2A5A] md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-[#DCDDD3]/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E2A5A] lg:hidden"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d={mobileMenuOpen ? "M6 6l12 12M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"} />
             </svg>
           </button>
+          </div>
         </div>
         <div
           id="mobile-navigation"
           hidden={!mobileMenuOpen}
-          className="absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-[#DCDDD3] bg-[#F5F3EC] shadow-sm md:hidden"
+          className="absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-[#DCDDD3] bg-[#F5F3EC] shadow-sm lg:hidden"
         >
           <div className="site-container grid gap-1 py-3">
             {NAV_LINKS.map((link) => (

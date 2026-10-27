@@ -116,7 +116,7 @@ export default function AdminDashboardPage() {
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#1E2A5A]" />
-                  Görseller: Yalnızca onaylı /students/gizem/ varlıkları
+                  Görseller: Hazır görseller veya cihazınızdan yüklenen kapaklar
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#1E2A5A]" />

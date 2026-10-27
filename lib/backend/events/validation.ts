@@ -92,7 +92,7 @@ export function validatePagination(
       fieldErrors.page = "Page must be a positive integer.";
     } else {
       const parsed = parseInt(pageParam, 10);
-      if (parsed < 1) {
+      if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > 10000) {
         fieldErrors.page = "Page must be greater than or equal to 1.";
       } else {
         page = parsed;
@@ -106,7 +106,7 @@ export function validatePagination(
       fieldErrors.limit = "Limit must be a positive integer.";
     } else {
       const parsed = parseInt(limitParam, 10);
-      if (parsed < 1) {
+      if (!Number.isSafeInteger(parsed) || parsed < 1) {
         fieldErrors.limit = "Limit must be at least 1.";
       } else if (parsed > 50) {
         fieldErrors.limit = "Limit cannot exceed 50.";

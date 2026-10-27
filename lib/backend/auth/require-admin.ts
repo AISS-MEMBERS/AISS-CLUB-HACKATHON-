@@ -19,6 +19,9 @@ export async function requireAdmin(): Promise<{ userId: string }> {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
+    if (authError && (!authError.status || authError.status >= 500)) {
+      throw new ApiError(503, "SERVICE_UNAVAILABLE", "The authentication service is unavailable.");
+    }
     throw new ApiError(
       401,
       "UNAUTHORIZED",
@@ -33,7 +36,10 @@ export async function requireAdmin(): Promise<{ userId: string }> {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (adminError || !adminRecord) {
+  if (adminError) {
+    throw new ApiError(503, "SERVICE_UNAVAILABLE", "Unable to verify administrator access.");
+  }
+  if (!adminRecord) {
     throw new ApiError(
       403,
       "FORBIDDEN",

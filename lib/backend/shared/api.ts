@@ -8,18 +8,21 @@ export class ApiError extends Error {
   readonly status: number;
   readonly code: string;
   readonly fieldErrors?: Record<string, string>;
+  readonly retryAfter?: number;
 
   constructor(
     status: number,
     code: string,
     message: string,
-    fieldErrors?: Record<string, string>
+    fieldErrors?: Record<string, string>,
+    retryAfter?: number
   ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.code = code;
     this.fieldErrors = fieldErrors;
+    this.retryAfter = retryAfter;
   }
 }
 
@@ -42,6 +45,7 @@ export function toErrorResponse(error: unknown): Response {
       status: error.status,
       headers: {
         "Cache-Control": "no-store",
+        ...(error.retryAfter ? { "Retry-After": String(error.retryAfter) } : {}),
       },
     });
   }

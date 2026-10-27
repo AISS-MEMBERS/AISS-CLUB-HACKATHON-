@@ -1,3 +1,5 @@
+import "server-only";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 /**
  * Database service functions for the Events module.
  *
@@ -9,50 +11,7 @@ import { ApiError } from "./bridge";
 import { mapPatchInputToRow, mapRowToClubEvent, mapWriteInputToRow } from "./mappers";
 import { ClubEvent, EventPatchInput, EventRow, EventWriteInput, PaginatedEvents } from "./types";
 
-/**
- * Returns a user-scoped Supabase client or throws 503 if unconfigured.
- */
-async function getSupabaseClient() {
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new ApiError(
-      503,
-      "DEPENDENCY_UNAVAILABLE",
-      "Database service is unavailable. Missing runtime database configuration."
-    );
-  }
-
-  try {
-    // Dynamic import of Selen's shared client to avoid build-time failure before merge
-    const clientModule = await import(
-      /* webpackIgnore: true */ "@/lib/supabase/server" as string
-    ).catch(() => null);
-
-    if (
-      clientModule &&
-      typeof clientModule.createServerSupabaseClient === "function"
-    ) {
-      return await clientModule.createServerSupabaseClient();
-    }
-  } catch (err) {
-    if (err instanceof ApiError) throw err;
-    throw new ApiError(
-      503,
-      "DEPENDENCY_UNAVAILABLE",
-      "Failed to initialize Supabase server client."
-    );
-  }
-
-  throw new ApiError(
-    503,
-    "DEPENDENCY_UNAVAILABLE",
-    "Shared createServerSupabaseClient module is pending integration by team lead."
-  );
-}
+const getSupabaseClient = createServerSupabaseClient;
 
 /**
  * Public: Fetches published events only, with deterministic ordering (startsAt asc, id asc)
@@ -191,9 +150,10 @@ export async function updateAdminEvent(
     .from("events")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
-  if (fetchError || !existing) {
+  if (fetchError) throw new ApiError(503, "DATABASE_UNAVAILABLE", "Unable to load the event.");
+  if (!existing) {
     throw new ApiError(404, "NOT_FOUND", `Event with ID '${id}' was not found.`);
   }
 

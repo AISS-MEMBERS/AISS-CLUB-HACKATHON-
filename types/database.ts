@@ -28,6 +28,7 @@ export interface Database {
             columns: ["user_id"];
             isOneToOne: true;
             referencedRelation: "users";
+            referencedColumns: ["id"];
             referencedSchema: "auth";
           }
         ];
@@ -127,7 +128,10 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      aiss_consume_rate_limit: {
+        Args: { p_scope: string; p_bucket: string };
+        Returns: { allowed: boolean; retry_after: number }[];
+      };
     };
     Enums: {
       [_ in never]: never;

@@ -30,13 +30,13 @@ export default function AdminHeader({ activeTab }: AdminHeaderProps) {
     try {
       const result = await performLogout();
       if (result.success) {
-        router.push("/login");
+        router.replace("/login");
+        router.refresh();
       } else {
-        // If logout fails (e.g. 401 or network), still redirect to /login to ensure clean state
-        router.push("/login");
+        setLogoutError(result.error.message);
       }
     } catch {
-      router.push("/login");
+      setLogoutError("Çıkış yapılamadı. Lütfen tekrar deneyin.");
     } finally {
       setIsLoggingOut(false);
     }

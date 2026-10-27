@@ -201,7 +201,7 @@ export function validatePagination(
 
   if (pageParam !== null) {
     const parsedPage = Number(pageParam);
-    if (!Number.isInteger(parsedPage) || parsedPage < 1) {
+    if (!Number.isSafeInteger(parsedPage) || parsedPage < 1 || parsedPage > 10000) {
       return {
         ok: false,
         status: 400,
@@ -214,7 +214,7 @@ export function validatePagination(
 
   if (limitParam !== null) {
     const parsedLimit = Number(limitParam);
-    if (!Number.isInteger(parsedLimit) || parsedLimit < 1 || parsedLimit > 50) {
+    if (!Number.isSafeInteger(parsedLimit) || parsedLimit < 1 || parsedLimit > 50) {
       return {
         ok: false,
         status: 400,

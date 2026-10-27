@@ -47,6 +47,7 @@ async function requestJson<T>(
 
     if (!response.ok) {
       if (response.status === 401) {
+        if (typeof window !== "undefined") window.location.replace("/login");
         return {
           success: false,
           error: {
@@ -98,7 +99,8 @@ async function requestJson<T>(
         };
       }
 
-      if (json && typeof json === "object" && "error" in json) {
+      if (json && typeof json === "object" && json.success === false &&
+          json.error && typeof json.error.code === "string" && typeof json.error.message === "string") {
         return json as ApiResult<T>;
       }
 
@@ -111,6 +113,9 @@ async function requestJson<T>(
       };
     }
 
+    if (!json || typeof json !== "object" || json.success !== true || !("data" in json)) {
+      return { success: false, error: { code: "INVALID_RESPONSE", message: "Sunucudan geçerli bir yanıt alınamadı." } };
+    }
     return json as ApiResult<T>;
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Ağ bağlantı hatası oluştu.";

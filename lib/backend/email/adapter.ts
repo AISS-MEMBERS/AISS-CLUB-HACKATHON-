@@ -2,7 +2,8 @@
 // Server-only Resend HTTPS notification adapter.
 // Uses native fetch with zero added dependencies, bounded timeout, and idempotency key.
 
-import { ContactMessage } from "../contact/types";
+import "server-only";
+import type { ContactMessage } from "@/types/backend";
 import { EmailConfig, EmailDeliveryResult } from "./types";
 
 function getEmailConfig(): EmailConfig {
@@ -61,7 +62,7 @@ export async function sendContactEmailNotification(
     return {
       delivered: false,
       status: "not_configured",
-      reason: `Email notification is unconfigured or blocked (missing: ${missing.join(", ")}). Delivery requires Mohamad's approval.`,
+      reason: `Email notification is not configured (missing: ${missing.join(", ")}).`,
     };
   }
 

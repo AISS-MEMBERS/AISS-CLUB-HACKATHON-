@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
-import { ApiError } from "@/lib/backend/shared/api";
+import { publicSupabaseConfig } from "@/lib/backend/shared/config";
 
 /**
  * Creates a server-side user-scoped Supabase client that reads and writes
@@ -13,25 +13,12 @@ import { ApiError } from "@/lib/backend/shared/api";
 export async function createServerSupabaseClient(): Promise<
   SupabaseClient<Database>
 > {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  if (
-    !url ||
-    !publishableKey ||
-    url.includes("YOUR_PROJECT_REF") ||
-    publishableKey.includes("REPLACE")
-  ) {
-    throw new ApiError(
-      503,
-      "SERVICE_UNAVAILABLE",
-      "Supabase service configuration is missing or incomplete."
-    );
-  }
+  const { url, key: publishableKey } = publicSupabaseConfig();
 
   const cookieStore = await cookies();
 
   return createServerClient<Database>(url, publishableKey, {
+    global: { fetch: (input, init) => fetch(input, { ...init, cache: "no-store", signal: init?.signal ?? AbortSignal.timeout(10000) }) },
     cookies: {
       getAll() {
         return cookieStore.getAll();

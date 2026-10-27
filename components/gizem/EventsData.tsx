@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import FeaturedSessionCard from "./FeaturedSessionCard";
 import TimelineEventCard from "./TimelineEventCard";
 import MobileCardCarousel from "@/components/shared/MobileCardCarousel";
-import { ApiResult, ClubEvent, computeEventStatus } from "@/lib/backend/events";
+import type { ApiResult, ClubEvent } from "@/types/backend";
+import { computeEventStatus } from "@/lib/backend/events/mappers";
 
 type FetchState =
   | { status: "loading" }

@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
-import DemoBanner from "@/components/admin/DemoBanner";
 import EventFormModal from "@/components/admin/EventFormModal";
 import EventList from "@/components/admin/EventList";
 import {
@@ -10,14 +9,12 @@ import {
   fetchAdminEvents,
   updateAdminEvent,
 } from "@/components/admin/api";
-import { DEMO_EVENTS } from "@/components/admin/fixtures";
 import { ClubEvent, EventWriteInput, PublicationStatus } from "@/components/admin/types";
 
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<ClubEvent[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -33,17 +30,12 @@ export default function AdminEventsPage() {
       if (result.success) {
         setEvents(result.data.items);
         setPage(result.data.page);
-        setIsDemoMode(false);
       } else {
-        // If API is not available (404, 503, NETWORK_ERROR), switch to DEMO fixtures
-        setIsDemoMode(true);
-        setEvents(DEMO_EVENTS);
-        setPage(targetPage);
+        // Preserve earlier data and display the actual backend failure.
+        setErrorMessage(result.error.message);
       }
     } catch {
-      setIsDemoMode(true);
-      setEvents(DEMO_EVENTS);
-      setPage(targetPage);
+      setErrorMessage("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
     } finally {
       setIsLoading(false);
     }
@@ -58,17 +50,12 @@ export default function AdminEventsPage() {
         if (result.success) {
           setEvents(result.data.items);
           setPage(result.data.page);
-          setIsDemoMode(false);
         } else {
-          setIsDemoMode(true);
-          setEvents(DEMO_EVENTS);
-          setPage(1);
+          setErrorMessage(result.error.message);
         }
       } catch {
         if (ignore) return;
-        setIsDemoMode(true);
-        setEvents(DEMO_EVENTS);
-        setPage(1);
+        setErrorMessage("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
       } finally {
         if (!ignore) {
           setIsLoading(false);
@@ -95,14 +82,6 @@ export default function AdminEventsPage() {
     data: EventWriteInput
   ): Promise<{ success: boolean; error?: string; fieldErrors?: Record<string, string> }> => {
     setSuccessMessage(null);
-
-    if (isDemoMode) {
-      return {
-        success: false,
-        error:
-          "DEMO modu: Arka uç API henüz bu dala entegre edilmediğinden oluşturma/güncelleme yapılamaz. Veritabanı bağlandığında canlı API çağrılacaktır.",
-      };
-    }
 
     try {
       if (editingEvent) {
@@ -142,13 +121,6 @@ export default function AdminEventsPage() {
     setSuccessMessage(null);
     setErrorMessage(null);
 
-    if (isDemoMode) {
-      setErrorMessage(
-        "DEMO modu: Arka uç API entegrasyonu tamamlanana kadar durum değişiklikleri sunucuya kalıcı olarak yazılamaz (sahte setTimeout ile kaydedildi gösterilmez)."
-      );
-      return;
-    }
-
     // Preserve previous state in case update fails
     const previousEvents = [...events];
     try {
@@ -172,9 +144,6 @@ export default function AdminEventsPage() {
       <AdminHeader activeTab="events" />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        {isDemoMode && (
-          <DemoBanner message="Etkinlikler API'si (/api/admin/events) henüz hazır olmadığından veriler test fixtures ile görüntülenmektedir" />
-        )}
 
         {/* Page title & Create button */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

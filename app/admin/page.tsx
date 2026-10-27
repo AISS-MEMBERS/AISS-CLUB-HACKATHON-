@@ -1,53 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import AdminHeader from "@/components/admin/AdminHeader";
-import DemoBanner from "@/components/admin/DemoBanner";
-import { fetchAdminEvents, fetchAdminMessages } from "@/components/admin/api";
 
 export default function AdminDashboardPage() {
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  const [checkingApi, setCheckingApi] = useState(true);
-
-  useEffect(() => {
-    // Check if live backend endpoints are reachable
-    async function checkBackendConnectivity() {
-      try {
-        const [eventsRes, messagesRes] = await Promise.all([
-          fetchAdminEvents(1),
-          fetchAdminMessages(1),
-        ]);
-
-        // If both endpoints return network error or 404, we are in demo mode during development
-        if (
-          (!eventsRes.success && eventsRes.error.code === "NETWORK_ERROR") ||
-          (!messagesRes.success && messagesRes.error.code === "NETWORK_ERROR") ||
-          (!eventsRes.success && eventsRes.error.code === "NOT_FOUND") ||
-          (!messagesRes.success && messagesRes.error.code === "NOT_FOUND")
-        ) {
-          setIsDemoMode(true);
-        } else {
-          setIsDemoMode(false);
-        }
-      } catch {
-        setIsDemoMode(true);
-      } finally {
-        setCheckingApi(false);
-      }
-    }
-
-    checkBackendConnectivity();
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#F5F3EC] text-[#171916]">
       <AdminHeader activeTab="dashboard" />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        {isDemoMode && !checkingApi && (
-          <DemoBanner message="API uç noktaları (/api/admin/*) henüz hazır olmadığından veya arka uç bağlantısı kurulmadığından sistem geliştirme/demo durumundadır" />
-        )}
 
         <div className="mb-8">
           <h1 className="text-2xl font-extrabold tracking-tight text-[#1E2A5A] sm:text-3xl">

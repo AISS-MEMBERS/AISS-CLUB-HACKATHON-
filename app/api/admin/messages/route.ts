@@ -1,3 +1,5 @@
+import { requireAdmin } from "@/lib/backend/auth/require-admin";
+import { toErrorResponse } from "@/lib/backend/shared/api";
 // app/api/admin/messages/route.ts
 // Route handler for admin messages listing.
 // GET /api/admin/messages
@@ -10,7 +12,8 @@ import { validatePagination } from "@/lib/backend/contact/validation";
 
 export async function GET(
   request: NextRequest
-): Promise<NextResponse<ApiResult<{ items: ContactMessage[]; page: number }>>> {
+) {
+  try { await requireAdmin(); } catch (error) { return toErrorResponse(error); }
   // 1. Validate pagination query parameters
   const pagination = validatePagination(request.nextUrl.searchParams);
   if (!pagination.ok) {

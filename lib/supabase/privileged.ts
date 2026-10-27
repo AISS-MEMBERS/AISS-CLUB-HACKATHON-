@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
+import { configured, publicSupabaseConfig } from "@/lib/backend/shared/config";
 import { ApiError } from "@/lib/backend/shared/api";
 
 /**
@@ -14,23 +15,12 @@ import { ApiError } from "@/lib/backend/shared/api";
  *    and rate-limit storage.
  */
 export function createPrivilegedSupabaseClient(): SupabaseClient<Database> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const { url } = publicSupabaseConfig();
   const secretKey = process.env.SUPABASE_SECRET_KEY;
-
-  if (
-    !url ||
-    !secretKey ||
-    url.includes("YOUR_PROJECT_REF") ||
-    secretKey.includes("REPLACE")
-  ) {
-    throw new ApiError(
-      503,
-      "SERVICE_UNAVAILABLE",
-      "Supabase privileged service configuration is missing or incomplete."
-    );
-  }
+  if (!configured(secretKey)) throw new ApiError(503, "SERVICE_UNAVAILABLE", "Server configuration is missing.");
 
   return createClient<Database>(url, secretKey, {
+    global: { fetch: (input, init) => fetch(input, { ...init, cache: "no-store", signal: init?.signal ?? AbortSignal.timeout(10000) }) },
     auth: {
       autoRefreshToken: false,
       persistSession: false,

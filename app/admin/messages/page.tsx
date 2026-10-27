@@ -2,18 +2,15 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import AdminHeader from "@/components/admin/AdminHeader";
-import DemoBanner from "@/components/admin/DemoBanner";
 import MessageDetailModal from "@/components/admin/MessageDetailModal";
 import MessageList from "@/components/admin/MessageList";
 import { fetchAdminMessages, updateMessageStatus } from "@/components/admin/api";
-import { DEMO_MESSAGES } from "@/components/admin/fixtures";
 import { ContactMessage, MessageStatus } from "@/components/admin/types";
 
 export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -29,17 +26,12 @@ export default function AdminMessagesPage() {
       if (result.success) {
         setMessages(result.data.items);
         setPage(result.data.page);
-        setIsDemoMode(false);
       } else {
-        // If API is not available, switch to DEMO fixtures
-        setIsDemoMode(true);
-        setMessages(DEMO_MESSAGES);
-        setPage(targetPage);
+        // Never substitute fixture data for a failed live request.
+        setErrorMessage(result.error.message);
       }
     } catch {
-      setIsDemoMode(true);
-      setMessages(DEMO_MESSAGES);
-      setPage(targetPage);
+      setErrorMessage("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
     } finally {
       setIsLoading(false);
     }
@@ -54,17 +46,12 @@ export default function AdminMessagesPage() {
         if (result.success) {
           setMessages(result.data.items);
           setPage(result.data.page);
-          setIsDemoMode(false);
         } else {
-          setIsDemoMode(true);
-          setMessages(DEMO_MESSAGES);
-          setPage(1);
+          setErrorMessage(result.error.message);
         }
       } catch {
         if (ignore) return;
-        setIsDemoMode(true);
-        setMessages(DEMO_MESSAGES);
-        setPage(1);
+        setErrorMessage("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
       } finally {
         if (!ignore) {
           setIsLoading(false);
@@ -85,13 +72,6 @@ export default function AdminMessagesPage() {
   const handleStatusChange = async (id: string, newStatus: MessageStatus) => {
     setSuccessMessage(null);
     setErrorMessage(null);
-
-    if (isDemoMode) {
-      setErrorMessage(
-        "DEMO modu: Arka uç API entegrasyonu tamamlanana kadar durum değişiklikleri sunucuya kalıcı olarak kaydedilemez (sahte setTimeout ile kaydedildi gösterilmez)."
-      );
-      return;
-    }
 
     const previousMessages = [...messages];
     try {
@@ -118,9 +98,6 @@ export default function AdminMessagesPage() {
       <AdminHeader activeTab="messages" />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        {isDemoMode && (
-          <DemoBanner message="İletişim Mesajları API'si (/api/admin/messages) henüz hazır olmadığından veriler test fixtures ile görüntülenmektedir" />
-        )}
 
         {/* Page title */}
         <div className="mb-6">

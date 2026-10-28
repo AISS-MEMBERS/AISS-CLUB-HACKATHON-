@@ -70,3 +70,49 @@ body {
     animation: none;
   }
 }
+
+/* Sticky scenes consume real page scroll distance. No body locks or touch interception. */
+[data-card-scene] { min-width: 0; }
+[data-card-stage] { display: flow-root; }
+@media (max-width: 767px) {
+  [data-card-scene][data-scroll-mode="pinned"] > [data-card-stage] {
+    position: sticky;
+  }
+  [data-card-scene][data-scroll-mode="pinned"] [data-card-track] {
+    overflow-x: hidden;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+    touch-action: pan-y pinch-zoom;
+  }
+  [data-card-scene] .timeline-scroll-card {
+    background-color: white;
+    border-color: #dcddd3;
+    transition: background-color 450ms ease, border-color 450ms ease;
+  }
+  [data-card-scene] .timeline-scroll-card .timeline-cover {
+    opacity: 0;
+    transition: opacity 450ms ease;
+  }
+  [data-card-scene] .timeline-scroll-card .timeline-copy {
+    color: #1e2a5a;
+    filter: none;
+    transition: color 450ms ease;
+  }
+  [data-card-scene] [data-card-active="true"] .timeline-scroll-card {
+    background-color: #1e2a5a;
+    border-color: #1e2a5a;
+  }
+  [data-card-scene] [data-card-active="true"] .timeline-scroll-card .timeline-cover {
+    opacity: 1;
+  }
+  [data-card-scene] [data-card-active="true"] .timeline-scroll-card .timeline-copy {
+    color: white;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-card-scene] [data-card-track] { scroll-behavior: auto; }
+  [data-card-scene] *, [data-card-scene] *::before, [data-card-scene] *::after {
+    transition-duration: 0s !important;
+    animation: none !important;
+  }
+}

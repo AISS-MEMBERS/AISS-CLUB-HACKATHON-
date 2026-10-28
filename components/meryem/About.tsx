@@ -131,7 +131,7 @@ export default function About() {
     () => false
   );
 
-  const { trackRef: carouselRef, activeIndex: mobileIndex, goTo } =
+  const { sceneRef, stageRef, trackRef: carouselRef, activeIndex: mobileIndex, goTo } =
     useMobileCardCarousel<HTMLDivElement>(FOCUS_AREAS.length);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -270,11 +270,13 @@ export default function About() {
       {/* ------------------------------------------------------------------ */}
       {/* 2. Overlapping 3D Fan Carousel Cards                                */}
       {/* ------------------------------------------------------------------ */}
-      <div className="relative mt-6 sm:mt-8">
+      <div ref={sceneRef} data-card-scene className="relative mt-6 sm:mt-8">
+        <div ref={stageRef} data-card-stage>
 
         {/* 3D Carousel Container */}
         <div
           ref={carouselRef}
+          data-card-track
           role="region"
           aria-roledescription="carousel"
           aria-label="Core Focus Areas"
@@ -314,9 +316,7 @@ export default function About() {
             const scale = prefersReducedMotion
               ? 1
               : isMobile
-                ? isFeatured
-                  ? 1.02
-                  : 0.98
+                ? 1
                 : isFeatured
                   ? 1.04
                   : 0.96;
@@ -405,7 +405,7 @@ export default function About() {
             );
           })}
         </div>
-
+        </div>
       </div>
 
       {/* ------------------------------------------------------------------ */}

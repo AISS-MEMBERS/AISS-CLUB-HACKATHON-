@@ -58,7 +58,7 @@ export default function TimelineEventCard({
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${
+      className={`timeline-scroll-card group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${
         isFirst ? "origin-left" : "origin-center"
       }`}
     >
@@ -84,17 +84,17 @@ export default function TimelineEventCard({
         src={bgImageSrc}
         alt={`${event.title} session background`}
         fill
-        className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+        className="timeline-cover object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         sizes="(max-width: 640px) 300px, 350px"
       />
 
       {/* Subtle Dark Navy Overlay for optimal text readability while maintaining image visibility */}
       <div
-        className="absolute inset-0 bg-[#0E1530]/55 backdrop-blur-[0.5px]"
+        className="timeline-cover absolute inset-0 bg-[#0E1530]/55 backdrop-blur-[0.5px]"
         aria-hidden="true"
       />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-[#0E1530]/95 via-[#0E1530]/50 to-[#1E2A5A]/35"
+        className="timeline-cover absolute inset-0 bg-gradient-to-t from-[#0E1530]/95 via-[#0E1530]/50 to-[#1E2A5A]/35"
         aria-hidden="true"
       />
 
@@ -155,11 +155,11 @@ export default function TimelineEventCard({
 
         {/* MIDDLE AREA: Title and Description (Always visible by default) */}
         <div className="my-4 flex-1 space-y-2.5">
-          <h4 className="text-base font-bold text-white sm:text-lg leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]">
+          <h4 className="timeline-copy text-base font-bold text-white sm:text-lg leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]">
             {event.title}
           </h4>
 
-          <p className="text-xs sm:text-sm leading-relaxed text-slate-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+          <p className="timeline-copy text-xs sm:text-sm leading-relaxed text-slate-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
             {event.description}
           </p>
         </div>
@@ -170,7 +170,7 @@ export default function TimelineEventCard({
           {isExpanded && hasDetails && (
             <div
               id={`timeline-card-details-${event.id}`}
-              className="space-y-1.5 text-[11px] sm:text-xs text-slate-200"
+              className="timeline-copy space-y-1.5 text-[11px] sm:text-xs text-slate-200"
             >
               {event.location && (
                 <div className="flex items-center gap-1.5">

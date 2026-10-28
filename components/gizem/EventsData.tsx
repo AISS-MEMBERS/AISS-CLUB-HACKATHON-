@@ -180,7 +180,7 @@ export default function EventsData() {
             return (
               <li
                 key={event.id}
-                className="relative flex flex-col flex-shrink-0 snap-start w-[300px] sm:w-[340px] lg:w-[350px] [@media(hover:hover)]:hover:z-20"
+                className="relative flex flex-col flex-shrink-0 snap-start w-[min(300px,calc(100vw-4rem))] sm:w-[340px] lg:w-[350px] [@media(hover:hover)]:hover:z-20"
               >
                 {/* Timeline horizontal connector track & indicator dot */}
                 <div className="relative mb-3 flex items-center">

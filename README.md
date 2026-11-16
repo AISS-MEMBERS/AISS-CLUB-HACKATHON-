@@ -11,7 +11,7 @@ Open http://localhost:3000.
 Run npm run check.
 
 ## Team instructions
-Read AGENTS.md and your guide in docs/students/.
+Read AGENTS.md, your guide in docs/students/, and docs/I18N_GUIDE.md for translation conventions.
 Each student has a component folder and an asset folder.
 The first contact form is a demo and sends or stores nothing.
 

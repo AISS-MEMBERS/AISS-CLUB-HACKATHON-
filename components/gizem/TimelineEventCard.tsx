@@ -8,38 +8,44 @@ import {
   formatDisplayDate,
   formatDisplayTime,
 } from "@/lib/backend/events/mappers";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface TimelineEventCardProps {
   event: ClubEvent;
   isFirst?: boolean;
 }
 
-function getTimelineImage(id: string): { src: string; alt: string } {
+function getTimelineImage(
+  id: string,
+  altMap?: Record<string, string>
+): { src: string; alt: string } {
+  const alt =
+    altMap?.[id] || altMap?.default || "AI technical session schematic diagram";
   switch (id) {
     case "featured-1":
       return {
         src: "/students/gizem/transformer-architecture.jpg",
-        alt: "Transformer neural network architecture schematic diagram",
+        alt,
       };
     case "evt-1":
       return {
         src: "/students/gizem/llm-finetuning.jpg",
-        alt: "Large language model fine-tuning data pipeline schematic diagram",
+        alt,
       };
     case "evt-2":
       return {
         src: "/students/gizem/computer-vision.jpg",
-        alt: "Computer vision and OpenCV image processing pipeline schematic diagram",
+        alt,
       };
     case "evt-3":
       return {
         src: "/students/gizem/ai-ethics.jpg",
-        alt: "AI ethics and data governance framework schematic diagram",
+        alt,
       };
     default:
       return {
         src: "/students/gizem/transformer-architecture.jpg",
-        alt: "AI technical session schematic diagram",
+        alt,
       };
   }
 }
@@ -49,12 +55,21 @@ export default function TimelineEventCard({
   isFirst = false,
 }: TimelineEventCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useLanguage();
   const isUpcoming =
     computeEventStatus(event.startsAt, event.endsAt) === "upcoming";
   const displayDate = formatDisplayDate(event.startsAt);
   const displayTime = formatDisplayTime(event.startsAt, event.endsAt);
-  const bgImageSrc = event.imagePath || getTimelineImage(event.id).src;
+  const timelineImage = getTimelineImage(event.id, t.events.timelineImages);
+  const bgImageSrc = event.imagePath || timelineImage.src;
   const hasDetails = Boolean(event.location || event.lead);
+
+  const categoryLabel =
+    event.category === "WORKSHOP"
+      ? t.events.categories.workshop
+      : event.category === "TALK"
+      ? t.events.categories.talk
+      : t.events.categories.buildSession;
 
   return (
     <article
@@ -82,7 +97,7 @@ export default function TimelineEventCard({
       {/* Background Image: Specific to event topic */}
       <Image
         src={bgImageSrc}
-        alt={`${event.title} session background`}
+        alt={timelineImage.alt}
         fill
         className="timeline-cover object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         sizes="(max-width: 640px) 300px, 350px"
@@ -105,7 +120,7 @@ export default function TimelineEventCard({
           {/* First row: Category on the far left, Status badge immediately beside it */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-md border border-white/30 bg-[#1E2A5A]/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm shadow-sm">
-              {event.category}
+              {categoryLabel}
             </span>
 
             {isUpcoming ? (
@@ -114,11 +129,11 @@ export default function TimelineEventCard({
                   className="inline-block h-1.5 w-1.5 rounded-full bg-white animate-subtle-dot-timeline"
                   aria-hidden="true"
                 />
-                UPCOMING
+                {t.events.status.upcoming}
               </span>
             ) : (
               <span className="inline-flex items-center rounded-full bg-[#1E2A5A]/80 border border-white/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-200 shadow-sm backdrop-blur-sm">
-                ARCHIVED
+                {t.events.status.archived}
               </span>
             )}
           </div>
@@ -213,7 +228,10 @@ export default function TimelineEventCard({
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  <span className="truncate">{event.lead}</span>
+                  <span className="truncate">
+                    <strong className="font-semibold text-white/90">{t.events.card.leadLabel}</strong>{" "}
+                    {event.lead}
+                  </span>
                 </div>
               )}
             </div>
@@ -228,7 +246,7 @@ export default function TimelineEventCard({
               aria-controls={`timeline-card-details-${event.id}`}
               className="inline-flex items-center gap-1.5 rounded-lg bg-[#1E2A5A] border border-white/30 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#283875] hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E2A5A] cursor-pointer"
             >
-              <span>{isExpanded ? "Show less" : "Show more"}</span>
+              <span>{isExpanded ? t.events.card.showLess : t.events.card.showMore}</span>
               <svg
                 className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${
                   isExpanded ? "rotate-180" : ""

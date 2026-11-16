@@ -1,6 +1,11 @@
+"use client";
+
 import EventsData from "./EventsData";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Events() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="events"
@@ -21,7 +26,7 @@ export default function Events() {
                   className="flex items-center"
                   aria-hidden={i > 0 ? "true" : undefined}
                 >
-                  Academic Calendar &amp; Working Sessions
+                  {t.events.ticker}
                   <span
                     className="mx-8 inline-block h-2.5 w-2.5 rounded-full bg-[#1E2A5A] md:h-3 md:w-3"
                     aria-hidden="true"

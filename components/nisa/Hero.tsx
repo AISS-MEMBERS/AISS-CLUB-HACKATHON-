@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="home"
@@ -24,24 +29,23 @@ export default function Hero() {
             id="hero-heading"
             className="max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
           >
-            Bridging academic curiosity with real-world AI impact.
+            {t.hero.heading}
           </h1>
           <p className="max-w-2xl text-base font-medium leading-relaxed sm:text-lg">
-            A community of undergraduate engineers and researchers collaborating to push
-            the boundaries of AI through hands-on development.
+            {t.hero.description}
           </p>
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <a
               href="#events"
               className="inline-flex min-h-11 items-center rounded-md border border-[#171916] bg-[#1E2A5A] px-6 py-3 text-sm font-semibold text-white shadow-[3px_3px_0px_0px_#171916] transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171916] motion-reduce:transform-none"
             >
-              Explore Events
+              {t.hero.exploreEvents}
             </a>
             <a
               href="#about"
               className="inline-flex min-h-11 items-center rounded-md border border-[#DCDDD3] bg-white px-6 py-3 text-sm font-semibold text-[#171916] transition-colors hover:bg-[#DCDDD3]/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171916]"
             >
-              Read About Us
+              {t.hero.readAboutUs}
             </a>
           </div>
         </div>

@@ -13,8 +13,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.uuaissclub.club"),
   title: "AISS Club | Üsküdar University",
-  description: "Üsküdar University's student community for artificial intelligence, intelligent systems, workshops and hands-on projects.",
+  description:
+    "Üsküdar University's student community for artificial intelligence, intelligent systems, workshops and hands-on projects.",
+  openGraph: {
+    title: "AISS Club | Üsküdar University",
+    description:
+      "Üsküdar University's student community for artificial intelligence, intelligent systems, workshops and hands-on projects.",
+    url: "https://www.uuaissclub.club",
+    siteName: "AISS Club",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "AISS Club website preview",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AISS Club | Üsküdar University",
+    description:
+      "Üsküdar University's student community for artificial intelligence, intelligent systems, workshops and hands-on projects.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

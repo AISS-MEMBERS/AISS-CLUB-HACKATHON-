@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { TeamMember, SocialPlatform } from './types';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface MemberCardProps {
   member: TeamMember;
@@ -48,6 +49,7 @@ export function MemberCard({
   onClick,
 }: MemberCardProps) {
   const [imageError, setImageError] = useState(false);
+  const { locale, t } = useLanguage();
   const availableSocials = member.socials.filter((s) => Boolean(s.url));
 
   const hasPhoto = Boolean(member.imageSrc) && !imageError;
@@ -68,7 +70,7 @@ export function MemberCard({
           {hasPhoto && member.imageSrc ? (
             <Image
               src={member.imageSrc}
-              alt={`Photo of ${member.name}`}
+              alt={t.team.photoAlt(member.name)}
               fill
               sizes="(max-width: 640px) 280px, (max-width: 1024px) 320px, 340px"
               className={`object-cover transition-transform duration-500 group-hover:scale-102 ${member.imagePosition || 'object-center'}`}
@@ -116,23 +118,31 @@ export function MemberCard({
       {/* 4 & 5. Available Social Links (Centered single icon support, hidden on distant cards) */}
       {!isDistant && availableSocials.length > 0 && (
         <div className="mt-5 flex w-full items-center justify-center gap-2.5 border-t border-[#DCDDD3] pt-4">
-          {availableSocials.map((social) => (
-            <a
-              key={social.platform}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={social.ariaLabel}
-              tabIndex={isFeatured ? 0 : -1}
-              onClick={(e) => {
-                // Prevent card click when clicking social link
-                e.stopPropagation();
-              }}
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-[#DCDDD3] bg-[#F5F3EC] text-[#171916] transition-all duration-150 hover:border-[#1E2A5A] hover:bg-[#1E2A5A] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
-            >
-              <SocialIcon platform={social.platform} />
-            </a>
-          ))}
+          {availableSocials.map((social) => {
+            const platformName = social.platform === 'github' ? 'GitHub' : 'LinkedIn';
+            const ariaLabel =
+              locale === 'tr'
+                ? `${member.name} ${platformName} profili`
+                : `${member.name}'s ${platformName} profile`;
+
+            return (
+              <a
+                key={social.platform}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={ariaLabel}
+                tabIndex={isFeatured ? 0 : -1}
+                onClick={(e) => {
+                  // Prevent card click when clicking social link
+                  e.stopPropagation();
+                }}
+                className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-[#DCDDD3] bg-[#F5F3EC] text-[#171916] transition-all duration-150 hover:border-[#1E2A5A] hover:bg-[#1E2A5A] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
+              >
+                <SocialIcon platform={social.platform} />
+              </a>
+            );
+          })}
         </div>
       )}
     </article>

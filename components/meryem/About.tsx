@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useSyncExternalStore } from "react";
 import { useMobileCardCarousel } from "@/components/shared/MobileCardCarousel";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 /**
  * Type contract for community statistics
@@ -114,6 +115,10 @@ function getMobileSnapshot(): boolean {
 }
 
 export default function About() {
+  const { t } = useLanguage();
+  const focusAreas = t.about.focusAreas;
+  const clubStats = t.about.stats;
+
   const [activeCard, setActiveCard] = useState<number>(1);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [tilt, setTilt] = useState<{ index: number; x: number; y: number } | null>(null);
@@ -132,7 +137,7 @@ export default function About() {
   );
 
   const { sceneRef, stageRef, trackRef: carouselRef, activeIndex: mobileIndex, goTo } =
-    useMobileCardCarousel<HTMLDivElement>(FOCUS_AREAS.length);
+    useMobileCardCarousel<HTMLDivElement>(focusAreas.length);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const effectiveCard = isMobile ? mobileIndex : hoveredCard !== null ? hoveredCard : activeCard;
@@ -156,12 +161,12 @@ export default function About() {
       scrollToCard(index);
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
-      const next = (index + 1) % FOCUS_AREAS.length;
+      const next = (index + 1) % focusAreas.length;
       scrollToCard(next);
       cardRefs.current[next]?.focus();
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
-      const prev = (index - 1 + FOCUS_AREAS.length) % FOCUS_AREAS.length;
+      const prev = (index - 1 + focusAreas.length) % focusAreas.length;
       scrollToCard(prev);
       cardRefs.current[prev]?.focus();
     }
@@ -187,7 +192,7 @@ export default function About() {
         <div
           className="relative mt-3 w-full overflow-hidden border-y border-[#E2E1DA] py-2.5 sm:py-3.5"
           role="region"
-          aria-label="About AISS Headlines Ticker"
+          aria-label={t.about.ticker}
         >
           {/* Subtle edge gradient dissolves for broadcast ticker look */}
           <div
@@ -201,14 +206,14 @@ export default function About() {
 
           <h2
             id="about-heading"
-            aria-label="Intelligence Built Through Curiosity and Collaboration"
+            aria-label={t.about.ticker}
             className="flex w-max select-none text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1E2A5A] leading-tight"
           >
             {/* Primary Track */}
             <span className="flex shrink-0 items-center aiss-ticker-track">
               {[0, 1, 2, 3].map((i) => (
                 <span key={`ticker-a-${i}`} className="inline-flex items-center">
-                  <span>Intelligence Built Through Curiosity and Collaboration</span>
+                  <span>{t.about.ticker}</span>
                   <span
                     className="mx-6 sm:mx-8 select-none text-[#1E2A5A]"
                     aria-hidden="true"
@@ -226,7 +231,7 @@ export default function About() {
             >
               {[0, 1, 2, 3].map((i) => (
                 <span key={`ticker-b-${i}`} className="inline-flex items-center">
-                  <span>Intelligence Built Through Curiosity and Collaboration</span>
+                  <span>{t.about.ticker}</span>
                   <span
                     className="mx-6 sm:mx-8 select-none text-[#1E2A5A]"
                     aria-hidden="true"
@@ -279,11 +284,11 @@ export default function About() {
           data-card-track
           role="region"
           aria-roledescription="carousel"
-          aria-label="Core Focus Areas"
+          aria-label={t.about.focusAreasTitle}
           className="flex md:flex-row md:justify-center md:items-stretch overflow-x-auto md:overflow-visible pb-4 md:pb-8 pt-4 snap-x snap-mandatory [perspective:1200px] gap-4 md:gap-0 md:-space-x-8 lg:-space-x-10"
           style={{ scrollbarWidth: "none" }}
         >
-          {FOCUS_AREAS.map((area, index) => {
+          {focusAreas.map((area, index) => {
             const isFeatured = effectiveCard === index;
 
             // Subtle fan angles on resting load and active states
@@ -419,7 +424,7 @@ export default function About() {
           aria-controls="about-stats-panel"
           className="text-xs font-semibold text-[#1E2A5A] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] rounded px-1.5 py-0.5 transition-colors inline-flex items-center gap-1 cursor-pointer"
         >
-          <span>{showStats ? "Show less metrics ↑" : "Show more club metrics ↓"}</span>
+          <span>{showStats ? t.about.showLessMetrics : t.about.showMoreMetrics}</span>
         </button>
 
         <div
@@ -437,7 +442,7 @@ export default function About() {
           <div className="min-h-0 overflow-hidden">
             <div className="rounded-xl bg-[#1E2A5A] text-white overflow-hidden">
               <div className="grid grid-cols-1 md:grid-cols-4 divide-y divide-white/15 md:divide-y-0 md:divide-x md:divide-white/15">
-                {CLUB_STATS.map((stat) => (
+                {clubStats.map((stat) => (
                   <article
                     key={stat.id}
                     className="group flex flex-col justify-between p-5 md:p-4 lg:p-6 transition-colors duration-250 ease-in-out hover:bg-white/[0.04] cursor-default"

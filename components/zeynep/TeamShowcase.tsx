@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from 'react';
 import { TeamMember } from './types';
 import { MemberCard } from './MemberCard';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 
 interface TeamShowcaseProps {
@@ -189,13 +190,14 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     };
   };
 
+  const { t } = useLanguage();
   const currentMember = members[currentIndex];
 
   return (
     <div
       role="region"
       aria-roledescription="carousel"
-      aria-label="AISS Club team members showcase"
+      aria-label={t.team.showcaseLabel}
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onMouseEnter={() => setIsHovered(true)}
@@ -208,8 +210,12 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
     >
       {/* Live Region for Screen Readers */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        Showing team member {currentIndex + 1} of {total}: {currentMember.name}
-        {currentMember.role ? `, ${currentMember.role}` : ''}
+        {t.team.showingMemberSr(
+          currentIndex + 1,
+          total,
+          currentMember.name,
+          currentMember.role
+        )}
       </div>
 
       {/* Circular Orbit Graphic Track */}
@@ -253,7 +259,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
           <button
             type="button"
             onClick={handlePrev}
-            aria-label="Previous team member"
+            aria-label={t.team.prevMember}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#1E2A5A] bg-[#1E2A5A] text-white transition-all duration-150 hover:bg-[#151D3F] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2 shadow-xs cursor-pointer"
           >
             <svg
@@ -274,7 +280,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
           <div
             className="flex items-center gap-1.5 sm:gap-2 px-2"
             role="tablist"
-            aria-label="Team member slides"
+            aria-label={t.team.slidesTablistLabel}
           >
             {members.map((member, index) => {
               const isActive = index === currentIndex;
@@ -284,7 +290,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
                   type="button"
                   role="tab"
                   aria-selected={isActive}
-                  aria-label={`Go to slide ${index + 1}: ${member.name}`}
+                  aria-label={t.team.goToSlideAria(index + 1, member.name)}
                   onClick={() => setCurrentIndex(index)}
                   className={`transition-all duration-300 rounded-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-1 ${isActive
                     ? 'h-2.5 w-7 bg-[#1E2A5A]'
@@ -299,7 +305,7 @@ export function TeamShowcase({ members }: TeamShowcaseProps) {
           <button
             type="button"
             onClick={handleNext}
-            aria-label="Next team member"
+            aria-label={t.team.nextMember}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#1E2A5A] bg-[#1E2A5A] text-white transition-all duration-150 hover:bg-[#151D3F] hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2 shadow-xs cursor-pointer"
           >
             <svg

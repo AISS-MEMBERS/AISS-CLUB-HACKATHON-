@@ -3,18 +3,21 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-const NAV_LINKS = [
-  { label: "Home", href: "/#home" },
-  { label: "About", href: "/#about" },
-  { label: "Events", href: "/#events" },
-  { label: "Team", href: "/#team" },
-  { label: "Contact", href: "/#contact" },
-] as const;
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
 export default function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { label: t.nav.home, href: "/#home" },
+    { label: t.nav.about, href: "/#about" },
+    { label: t.nav.events, href: "/#events" },
+    { label: t.nav.team, href: "/#team" },
+    { label: t.nav.contact, href: "/#contact" },
+  ] as const;
 
   return (
     <header
@@ -30,13 +33,13 @@ export default function SiteHeader() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-md focus:bg-[#1E2A5A] focus:px-4 focus:py-3 focus:text-white"
       >
-        Skip to content
+        {t.nav.skipToContent}
       </a>
-      <nav aria-label="Main navigation" className="relative">
+      <nav aria-label={t.nav.mainNavigationAria} className="relative">
         <div className="site-container flex h-20 items-center justify-between gap-4">
           <Link
             href="/"
-            aria-label="AISS Club home"
+            aria-label={t.nav.clubLogoAria}
             onClick={(event) => {
               if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
               if (window.location.pathname !== "/") return;
@@ -59,7 +62,7 @@ export default function SiteHeader() {
             </span>
           </Link>
           <div className="hidden items-center gap-6 lg:flex lg:gap-6">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -68,22 +71,31 @@ export default function SiteHeader() {
                 {link.label}
               </a>
             ))}
+            <LanguageSwitcher className="ml-2" />
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/join" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-md bg-[#1E2A5A] px-3 text-xs font-bold text-white hover:bg-[#2b3c7d] focus-visible:outline-2 focus-visible:outline-offset-4 sm:px-4 sm:text-sm">Join the Club</Link>
-          <button
-            ref={toggleRef}
-            type="button"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-navigation"
-            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-[#DCDDD3]/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E2A5A] lg:hidden"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d={mobileMenuOpen ? "M6 6l12 12M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"} />
-            </svg>
-          </button>
+            <Link
+              href="/join"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-md bg-[#1E2A5A] px-3 text-xs font-bold text-white hover:bg-[#2b3c7d] focus-visible:outline-2 focus-visible:outline-offset-4 sm:px-4 sm:text-sm"
+            >
+              {t.nav.joinClub}
+            </Link>
+            <div className="flex items-center gap-2 lg:hidden">
+              <LanguageSwitcher />
+              <button
+                ref={toggleRef}
+                type="button"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-navigation"
+                aria-label={mobileMenuOpen ? t.nav.closeMenu : t.nav.openMenu}
+                onClick={() => setMobileMenuOpen((open) => !open)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-[#DCDDD3]/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E2A5A]"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d={mobileMenuOpen ? "M6 6l12 12M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"} />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
         <div
@@ -92,7 +104,7 @@ export default function SiteHeader() {
           className="absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-[#DCDDD3] bg-[#F5F3EC] shadow-sm lg:hidden"
         >
           <div className="site-container grid gap-1 py-3">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -102,6 +114,12 @@ export default function SiteHeader() {
                 {link.label}
               </a>
             ))}
+            <div className="mt-2 flex items-center justify-between border-t border-[#DCDDD3] px-3 pt-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#1E2A5A]">
+                {t.nav.languageAriaLabel}
+              </span>
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       </nav>

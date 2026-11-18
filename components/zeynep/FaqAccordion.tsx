@@ -1,7 +1,7 @@
 import { FaqItem } from './types';
 
 interface FaqAccordionProps {
-  items: FaqItem[];
+  items: readonly FaqItem[];
 }
 
 export function FaqAccordion({ items }: FaqAccordionProps) {

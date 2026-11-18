@@ -2,12 +2,20 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
-export default function ReloadHomeLink({ children }: { children: ReactNode }) {
+interface ReloadHomeLinkProps {
+  children: ReactNode;
+  ariaLabel?: string;
+}
+
+export default function ReloadHomeLink({ children, ariaLabel }: ReloadHomeLinkProps) {
+  const { t } = useLanguage();
+
   return (
     <Link
       href="/"
-      aria-label="AISS Club home"
+      aria-label={ariaLabel || t.nav.clubLogoAria}
       className="inline-flex shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1E2A5A]"
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;

@@ -178,6 +178,17 @@ export default function EventList({
                           {isUpdating ? "..." : "Arşivle"}
                         </button>
                       )}
+
+                      {event.publicationStatus === "archived" && (
+                        <button
+                          type="button"
+                          onClick={() => handleStatus(event.id, "draft")}
+                          disabled={isUpdating}
+                          className="rounded-md border border-stone-300 bg-stone-100 px-2.5 py-1 text-xs font-semibold text-stone-700 hover:bg-stone-200 disabled:opacity-50"
+                        >
+                          {isUpdating ? "..." : "Arşivden Çıkar"}
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

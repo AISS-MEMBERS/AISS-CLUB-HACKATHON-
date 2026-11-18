@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useId } from "react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface ContactFormData {
   fullName: string;
@@ -24,6 +25,7 @@ const INITIAL_FORM_DATA: ContactFormData = {
 };
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<ContactFormData>(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<keyof ContactFormData, boolean>>({
@@ -50,25 +52,25 @@ export default function Contact() {
   const validateField = (name: keyof ContactFormData, value: string): string | undefined => {
     switch (name) {
       case "fullName":
-        if (!value.trim()) return "Please enter your full name.";
-        if (value.trim().length < 2) return "Full name must be at least 2 characters.";
+        if (!value.trim()) return t.contact.form.errors.nameRequired;
+        if (value.trim().length < 2) return t.contact.form.errors.nameMin;
         if (value.trim().length > 100) return "Full name cannot exceed 100 characters.";
         return undefined;
       case "universityEmail":
-        if (!value.trim()) return "Please enter your university email.";
+        if (!value.trim()) return t.contact.form.errors.emailRequired;
         if (value.trim().length > 254) return "Email address cannot exceed 254 characters.";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
-          return "Please enter a valid university email address (e.g. name@university.edu).";
+          return t.contact.form.errors.emailInvalid;
         }
         return undefined;
       case "areaOfInterest":
-        if (!value || value === "Select an area of interest") {
-          return "Please select an area of interest.";
+        if (!value || value === "Select an area of interest" || value === t.contact.form.selectInterestPlaceholder) {
+          return t.contact.form.errors.interestRequired;
         }
         return undefined;
       case "message":
-        if (!value.trim()) return "Please enter your message.";
-        if (value.trim().length < 10) return "Message must be at least 10 characters.";
+        if (!value.trim()) return t.contact.form.errors.messageRequired;
+        if (value.trim().length < 10) return t.contact.form.errors.messageMin;
         if (value.trim().length > 3000) return "Message cannot exceed 3000 characters.";
         return undefined;
       default:
@@ -191,13 +193,13 @@ export default function Contact() {
       <div className="mb-8 flex flex-col items-center border-b border-[#DCDDD3] pb-6 md:mb-10">
         <div className="inline-flex items-center gap-2 rounded-full border border-[#DCDDD3] bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#1E2A5A] shadow-2xs">
           <span className="h-1.5 w-1.5 rounded-full bg-[#1E2A5A]"></span>
-          <span>AISS ENGINEERING CLUB 2026</span>
+          <span>{t.contact.badge}</span>
         </div>
         <h2
           id="contact-heading"
           className="py-4 text-center text-2xl font-black tracking-tight text-[#1E2A5A] sm:text-3xl md:text-4xl"
         >
-          Let&apos;s build something intelligent together.
+          {t.contact.heading}
         </h2>
       </div>
 
@@ -205,13 +207,13 @@ export default function Contact() {
         <div className="flex flex-col justify-between space-y-6 lg:col-span-5">
           <div className="space-y-4">
             <h3 className="text-xl font-bold tracking-tight text-[#1E2A5A]">
-              Direct Technical Line
+              {t.contact.directLineTitle}
             </h3>
             <p className="text-sm leading-relaxed text-[#55574E]">
-              Our engineering society is open to all students passionate about building real-world AI systems, firmware, and collaborative open-source tools.
+              {t.contact.directLineDesc1}
             </p>
             <p className="text-sm leading-relaxed text-[#55574E]">
-              Drop your proposal, workshop question, or membership interest using the form. Our core team reviews incoming messages daily.
+              {t.contact.directLineDesc2}
             </p>
 
             <div className="space-y-3 pt-3">
@@ -268,22 +270,22 @@ export default function Contact() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <span className="text-xs font-medium text-[#1E2A5A]">Faculty of Engineering &amp; Natural Sciences &ndash; Lab 3</span>
+                <span className="text-xs font-medium text-[#1E2A5A]">{t.contact.facultyLocation}</span>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3 pt-2">
               <div className="rounded-xl border border-[#DCDDD3] bg-white p-3 text-center shadow-2xs">
                 <div className="text-lg font-black text-[#1E2A5A]">150+</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#77796F]">Members</div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#77796F]">{t.contact.stats.members}</div>
               </div>
               <div className="rounded-xl border border-[#DCDDD3] bg-white p-3 text-center shadow-2xs">
                 <div className="text-lg font-black text-[#1E2A5A]">8+</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#77796F]">Projects</div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#77796F]">{t.contact.stats.projects}</div>
               </div>
               <div className="rounded-xl border border-[#DCDDD3] bg-white p-3 text-center shadow-2xs">
                 <div className="text-lg font-black text-[#1E2A5A]">4</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#77796F]">Focus Labs</div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#77796F]">{t.contact.stats.focusLabs}</div>
               </div>
             </div>
           </div>
@@ -293,10 +295,10 @@ export default function Contact() {
               <svg className="h-4 w-4 text-[#1E2A5A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Typical Response Time</span>
+              <span>{t.contact.responseTime.title}</span>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-[#55574E]">
-              We review incoming messages during weekdays. You can typically expect a response within 24 to 48 hours.
+              {t.contact.responseTime.desc}
             </p>
           </div>
         </div>
@@ -316,10 +318,10 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-[#1E2A5A]">
-                    Message Received
+                    {t.contact.form.success.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-[#77796F]">
-                    Thank you for contacting the AISS Club! Your message has been saved for our core team. We review incoming messages daily.
+                    {t.contact.form.success.desc}
                   </p>
                 </div>
                 <div className="pt-2">
@@ -328,7 +330,7 @@ export default function Contact() {
                     onClick={handleReset}
                     className="inline-flex min-h-[44px] items-center justify-center rounded-md border border-[#171916] bg-white px-5 py-2.5 text-sm font-semibold text-[#171916] transition-all duration-150 hover:bg-[#F5F3EC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#171916] focus-visible:ring-offset-2 active:translate-y-0"
                   >
-                    Send Another Message
+                    {t.contact.form.success.button}
                   </button>
                 </div>
               </div>
@@ -361,9 +363,9 @@ export default function Contact() {
                         htmlFor={nameId}
                         className="block text-xs font-bold uppercase tracking-wider text-[#1E2A5A]"
                       >
-                        Full Name <span className="text-[#F0784B]" aria-hidden="true">*</span>
+                        {t.contact.form.fullName} <span className="text-[#F0784B]" aria-hidden="true">*</span>
                       </label>
-                      <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">REQUIRED</span>
+                      <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">{t.contact.form.required}</span>
                     </div>
                     <div className="mt-1.5">
                       <input
@@ -378,7 +380,7 @@ export default function Contact() {
                         value={formData.fullName}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        placeholder="e.g. Ada Lovelace"
+                        placeholder={t.contact.form.namePlaceholder}
                         className={`block min-h-[44px] w-full rounded-lg border px-3.5 py-2.5 text-sm text-[#1E2A5A] placeholder:text-[#77796F]/60 transition-all duration-150 focus:border-[#1E2A5A] focus:outline-none focus:ring-4 focus:ring-[#1E2A5A]/15 ${touched.fullName && errors.fullName
                           ? "border-[#F0784B] bg-[#FFF5F2]"
                           : "border-[#DCDDD3] bg-[#FCFBF8] hover:border-[#77796F] hover:bg-white"
@@ -405,9 +407,9 @@ export default function Contact() {
                         htmlFor={emailId}
                         className="block text-xs font-bold uppercase tracking-wider text-[#1E2A5A]"
                       >
-                        University Email <span className="text-[#F0784B]" aria-hidden="true">*</span>
+                        {t.contact.form.universityEmail} <span className="text-[#F0784B]" aria-hidden="true">*</span>
                       </label>
-                      <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">REQUIRED</span>
+                      <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">{t.contact.form.required}</span>
                     </div>
                     <div className="mt-1.5">
                       <input
@@ -422,7 +424,7 @@ export default function Contact() {
                         value={formData.universityEmail}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        placeholder="student@university.edu"
+                        placeholder={t.contact.form.emailPlaceholder}
                         className={`block min-h-[44px] w-full rounded-lg border px-3.5 py-2.5 text-sm text-[#1E2A5A] placeholder:text-[#77796F]/60 transition-all duration-150 focus:border-[#1E2A5A] focus:outline-none focus:ring-4 focus:ring-[#1E2A5A]/15 ${touched.universityEmail && errors.universityEmail
                           ? "border-[#F0784B] bg-[#FFF5F2]"
                           : "border-[#DCDDD3] bg-[#FCFBF8] hover:border-[#77796F] hover:bg-white"
@@ -449,9 +451,9 @@ export default function Contact() {
                         htmlFor={interestId}
                         className="block text-xs font-bold uppercase tracking-wider text-[#1E2A5A]"
                       >
-                        Area of Interest <span className="text-[#F0784B]" aria-hidden="true">*</span>
+                        {t.contact.form.areaOfInterest} <span className="text-[#F0784B]" aria-hidden="true">*</span>
                       </label>
-                      <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">REQUIRED</span>
+                      <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">{t.contact.form.required}</span>
                     </div>
                     <div className="relative mt-1.5">
                       <select
@@ -471,12 +473,12 @@ export default function Contact() {
                           }`}
                       >
                         <option value="" disabled>
-                          Select an area of interest
+                          {t.contact.form.selectInterestPlaceholder}
                         </option>
-                        <option value="Machine Learning">Machine Learning</option>
-                        <option value="Robotics">Robotics</option>
-                        <option value="Joining the Team">Joining the Team</option>
-                        <option value="General Inquiry">General Inquiry</option>
+                        <option value="Machine Learning">{t.contact.form.interests.ml}</option>
+                        <option value="Robotics">{t.contact.form.interests.robotics}</option>
+                        <option value="Joining the Team">{t.contact.form.interests.joining}</option>
+                        <option value="General Inquiry">{t.contact.form.interests.general}</option>
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#77796F]">
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -504,7 +506,7 @@ export default function Contact() {
                         htmlFor={messageId}
                         className="block text-xs font-bold uppercase tracking-wider text-[#1E2A5A]"
                       >
-                        Message <span className="text-[#F0784B]" aria-hidden="true">*</span>
+                        {t.contact.form.message} <span className="text-[#F0784B]" aria-hidden="true">*</span>
                       </label>
                       <span className="text-[11px] font-semibold tracking-wider text-[#77796F]">
                         {formData.message.length} / 3000
@@ -523,7 +525,7 @@ export default function Contact() {
                         value={formData.message}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        placeholder="Share your questions, research ideas, or why you'd like to collaborate with AISS Club..."
+                        placeholder={t.contact.form.messagePlaceholder}
                         className={`block w-full rounded-lg border px-3.5 py-2.5 text-sm text-[#1E2A5A] placeholder:text-[#77796F]/60 transition-all duration-150 focus:border-[#1E2A5A] focus:outline-none focus:ring-4 focus:ring-[#1E2A5A]/15 ${touched.message && errors.message
                           ? "border-[#F0784B] bg-[#FFF5F2]"
                           : "border-[#DCDDD3] bg-[#FCFBF8] hover:border-[#77796F] hover:bg-white"
@@ -557,11 +559,11 @@ export default function Contact() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span>Sending...</span>
+                        <span>{t.contact.form.submitting}</span>
                       </>
                     ) : (
                       <>
-                        <span>Send Message</span>
+                        <span>{t.contact.form.submit}</span>
                         <span aria-hidden="true">&rarr;</span>
                       </>
                     )}

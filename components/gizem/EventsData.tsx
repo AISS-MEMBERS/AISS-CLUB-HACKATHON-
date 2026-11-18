@@ -6,6 +6,7 @@ import TimelineEventCard from "./TimelineEventCard";
 import MobileCardCarousel from "@/components/shared/MobileCardCarousel";
 import type { ApiResult, ClubEvent } from "@/types/backend";
 import { computeEventStatus } from "@/lib/backend/events/mappers";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 type FetchState =
   | { status: "loading" }
@@ -14,6 +15,7 @@ type FetchState =
   | { status: "success"; events: ClubEvent[] };
 
 export default function EventsData() {
+  const { t } = useLanguage();
   const [state, setState] = useState<FetchState>({ status: "loading" });
   const [retryKey, setRetryKey] = useState(0);
 
@@ -147,7 +149,7 @@ export default function EventsData() {
         <div className="mb-10">
           <div className="-mt-4 mb-6 flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#1E2A5A]">
-              Featured Session // Next Up
+              {t.events.featuredBadge}
             </span>
           </div>
 
@@ -161,16 +163,16 @@ export default function EventsData() {
       <div>
         <div className="mb-0 mt-10 flex items-center justify-between pb-3">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1E2A5A]">
-            Semester Timeline // All Sessions
+            {t.events.timelineBadge}
           </h3>
           <span className="text-xs text-[#1E2A5A]">
-            {events.length} {events.length === 1 ? "SESSION" : "SESSIONS"} LISTED
+            {events.length} {t.events.sessionsListed}
           </span>
         </div>
 
         <MobileCardCarousel
           count={events.length}
-          label="Semester timeline events"
+          label={t.events.carouselLabel}
           className="relative flex items-stretch gap-6 overflow-x-auto pb-6 pt-4 px-4 sm:px-6 scroll-smooth snap-x snap-mandatory focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] focus-visible:ring-offset-2"
         >
           {events.map((event, index) => {

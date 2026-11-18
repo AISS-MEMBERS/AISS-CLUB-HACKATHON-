@@ -9,6 +9,7 @@ import {
   formatDisplayDate,
   formatDisplayTime,
 } from "@/lib/backend/events/mappers";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export type { ClubEvent };
 
@@ -18,6 +19,14 @@ interface FeaturedSessionCardProps {
 
 export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useLanguage();
+
+  const categoryLabel =
+    event.category === "WORKSHOP"
+      ? t.events.categories.workshop
+      : event.category === "TALK"
+      ? t.events.categories.talk
+      : t.events.categories.buildSession;
 
   const isUpcoming =
     computeEventStatus(event.startsAt, event.endsAt) === "upcoming";
@@ -48,7 +57,7 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
       {/* Background Image */}
       <Image
         src={imageSrc}
-        alt={`${event.title} presentation graphic`}
+        alt={t.events.card.transformerAlt}
         fill
         priority
         className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
@@ -68,7 +77,7 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
       {/* TOP AREA: Category and Status badge */}
       <div className="relative z-10 flex flex-wrap items-center gap-2.5 border-b border-white/20 pb-4">
         <span className="inline-flex items-center rounded-md border border-white/30 bg-[#1E2A5A]/90 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm shadow-sm">
-          {event.category}
+          {categoryLabel}
         </span>
         {isUpcoming ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1E2A5A] border border-white/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
@@ -76,11 +85,11 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
               className="inline-block h-2 w-2 rounded-full bg-white animate-subtle-dot"
               aria-hidden="true"
             />
-            UPCOMING
+            {t.events.status.upcoming}
           </span>
         ) : (
           <span className="inline-flex items-center rounded-full bg-[#1E2A5A]/80 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-200 shadow-sm backdrop-blur-sm">
-            ARCHIVED
+            {t.events.status.archived}
           </span>
         )}
       </div>
@@ -170,7 +179,7 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
                     />
                   </svg>
                   <span>
-                    <strong className="font-semibold text-white">Location:</strong>{" "}
+                    <strong className="font-semibold text-white">{t.events.card.locationLabel}</strong>{" "}
                     <span className="text-slate-100">{event.location}</span>
                   </span>
                 </div>
@@ -192,7 +201,7 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
                     />
                   </svg>
                   <span>
-                    <strong className="font-semibold text-white">Lead:</strong>{" "}
+                    <strong className="font-semibold text-white">{t.events.card.leadLabel}</strong>{" "}
                     <span className="text-slate-100">{event.lead}</span>
                   </span>
                 </div>
@@ -201,7 +210,7 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
 
             <div className="shrink-0">
               <span className="inline-flex items-center text-xs sm:text-sm font-semibold text-white">
-                Free entry for students &rarr;
+                {t.events.card.freeEntry}
               </span>
             </div>
           </div>
@@ -217,7 +226,7 @@ export default function FeaturedSessionCard({ event }: FeaturedSessionCardProps)
           aria-controls="featured-event-expanded-content"
           className="inline-flex items-center gap-1.5 rounded-lg bg-[#1E2A5A] border border-white/30 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#283875] hover:border-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1E2A5A] cursor-pointer"
         >
-          <span>{isExpanded ? "Show less" : "Show more"}</span>
+          <span>{isExpanded ? t.events.card.showLess : t.events.card.showMore}</span>
           <svg
             className={`h-4 w-4 text-white transition-transform duration-200 ${
               isExpanded ? "rotate-180" : ""

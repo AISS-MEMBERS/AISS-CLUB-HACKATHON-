@@ -9,7 +9,11 @@ import {
   fetchAdminEvents,
   updateAdminEvent,
 } from "@/components/admin/api";
-import { ClubEvent, EventWriteInput, PublicationStatus } from "@/components/admin/types";
+import {
+  ClubEvent,
+  EventWriteInput,
+  PublicationStatus,
+} from "@/components/admin/types";
 
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<ClubEvent[]>([]);
@@ -25,17 +29,20 @@ export default function AdminEventsPage() {
   const loadEvents = useCallback(async (targetPage: number) => {
     setIsLoading(true);
     setErrorMessage(null);
+
     try {
       const result = await fetchAdminEvents(targetPage);
+
       if (result.success) {
         setEvents(result.data.items);
         setPage(result.data.page);
       } else {
-        // Preserve earlier data and display the actual backend failure.
         setErrorMessage(result.error.message);
       }
     } catch {
-      setErrorMessage("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
+      setErrorMessage(
+        "Sunucuya bağlanılamadı. Lütfen tekrar deneyin."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -43,10 +50,13 @@ export default function AdminEventsPage() {
 
   useEffect(() => {
     let ignore = false;
+
     async function init() {
       try {
         const result = await fetchAdminEvents(1);
+
         if (ignore) return;
+
         if (result.success) {
           setEvents(result.data.items);
           setPage(result.data.page);
@@ -55,14 +65,19 @@ export default function AdminEventsPage() {
         }
       } catch {
         if (ignore) return;
-        setErrorMessage("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
+
+        setErrorMessage(
+          "Sunucuya bağlanılamadı. Lütfen tekrar deneyin."
+        );
       } finally {
         if (!ignore) {
           setIsLoading(false);
         }
       }
     }
+
     init();
+
     return () => {
       ignore = true;
     };
@@ -80,61 +95,105 @@ export default function AdminEventsPage() {
 
   const handleModalSubmit = async (
     data: EventWriteInput
-  ): Promise<{ success: boolean; error?: string; fieldErrors?: Record<string, string> }> => {
+  ): Promise<{
+    success: boolean;
+    error?: string;
+    fieldErrors?: Record<string, string>;
+  }> => {
     setSuccessMessage(null);
 
     try {
       if (editingEvent) {
-        const result = await updateAdminEvent(editingEvent.id, data);
+        const result = await updateAdminEvent(
+          editingEvent.id,
+          data
+        );
+
         if (result.success) {
-          setSuccessMessage(`"${result.data.title}" başarıyla güncellendi.`);
+          setSuccessMessage(
+            `"${result.data.title}" başarıyla güncellendi.`
+          );
+
           await loadEvents(page);
+
           return { success: true };
-        } else {
-          return {
-            success: false,
-            error: result.error.message,
-            fieldErrors: result.error.fieldErrors,
-          };
         }
-      } else {
-        const result = await createAdminEvent(data);
-        if (result.success) {
-          setSuccessMessage(`"${result.data.title}" başarıyla oluşturuldu.`);
-          await loadEvents(1);
-          return { success: true };
-        } else {
-          return {
-            success: false,
-            error: result.error.message,
-            fieldErrors: result.error.fieldErrors,
-          };
-        }
+
+        return {
+          success: false,
+          error: result.error.message,
+          fieldErrors: result.error.fieldErrors,
+        };
       }
+
+      const result = await createAdminEvent(data);
+
+      if (result.success) {
+        setSuccessMessage(
+          `"${result.data.title}" başarıyla oluşturuldu.`
+        );
+
+        await loadEvents(1);
+
+        return { success: true };
+      }
+
+      return {
+        success: false,
+        error: result.error.message,
+        fieldErrors: result.error.fieldErrors,
+      };
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "İşlem sırasında beklenmedik bir hata oluştu.";
-      return { success: false, error: msg };
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "İşlem sırasında beklenmedik bir hata oluştu.";
+
+      return {
+        success: false,
+        error: msg,
+      };
     }
   };
 
-  const handleStatusChange = async (id: string, status: PublicationStatus) => {
+  const handleStatusChange = async (
+    id: string,
+    status: PublicationStatus
+  ) => {
     setSuccessMessage(null);
     setErrorMessage(null);
 
-    // Preserve previous state in case update fails
     const previousEvents = [...events];
+
     try {
-      const result = await updateAdminEvent(id, { publicationStatus: status });
+      const result = await updateAdminEvent(id, {
+        publicationStatus: status,
+      });
+
       if (result.success) {
-        setSuccessMessage(`Etkinlik durumu "${status}" olarak güncellendi.`);
+        const statusText =
+          status === "archived"
+            ? "arşivlendi"
+            : status === "published"
+            ? "yayınlandı"
+            : "taslağa alındı";
+        setSuccessMessage(`Etkinlik başarıyla ${statusText}.`);
+
         await loadEvents(page);
       } else {
         setEvents(previousEvents);
-        setErrorMessage(`Durum güncellenemedi: ${result.error.message}`);
+        setErrorMessage(
+          `Durum güncellenemedi: ${result.error.message}`
+        );
       }
     } catch (err: unknown) {
       setEvents(previousEvents);
-      const msg = err instanceof Error ? err.message : "Bağlantı hatası.";
+
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Bağlantı hatası.";
+
       setErrorMessage(`Hata: ${msg}`);
     }
   };
@@ -144,13 +203,13 @@ export default function AdminEventsPage() {
       <AdminHeader activeTab="events" />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-
         {/* Page title & Create button */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-[#1E2A5A] sm:text-3xl">
               Etkinlik Yönetimi
             </h1>
+
             <p className="mt-1 text-sm text-stone-600">
               Kulüp etkinliklerini oluşturun, yayın durumunu yönetin ve arşivleyin.
             </p>
@@ -161,9 +220,21 @@ export default function AdminEventsPage() {
             onClick={handleOpenCreateModal}
             className="inline-flex items-center justify-center gap-2 rounded-md bg-[#1E2A5A] px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[#2b3c7d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1E2A5A]"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
             </svg>
+
             Yeni Etkinlik Oluştur
           </button>
         </div>
@@ -175,9 +246,13 @@ export default function AdminEventsPage() {
             className="mb-6 flex items-center justify-between rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-900 shadow-2xs"
           >
             <div className="flex items-center gap-2">
-              <span className="text-emerald-600 font-bold">✓</span>
+              <span className="text-emerald-600 font-bold">
+                ✓
+              </span>
+
               <span>{successMessage}</span>
             </div>
+
             <button
               type="button"
               onClick={() => setSuccessMessage(null)}
@@ -195,9 +270,13 @@ export default function AdminEventsPage() {
             className="mb-6 flex items-center justify-between rounded-lg border border-rose-300 bg-rose-50 p-4 text-sm text-rose-900 shadow-2xs"
           >
             <div className="flex items-center gap-2">
-              <span className="text-rose-600 font-bold">✕</span>
+              <span className="text-rose-600 font-bold">
+                ✕
+              </span>
+
               <span>{errorMessage}</span>
             </div>
+
             <button
               type="button"
               onClick={() => setErrorMessage(null)}
@@ -213,7 +292,10 @@ export default function AdminEventsPage() {
           <div className="flex min-h-[40vh] items-center justify-center rounded-xl border border-[#DCDDD3] bg-white p-8">
             <div className="flex flex-col items-center">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DCDDD3] border-t-[#1E2A5A]" />
-              <p className="mt-3 text-xs font-semibold text-stone-600">Etkinlikler yükleniyor...</p>
+
+              <p className="mt-3 text-xs font-semibold text-stone-600">
+                Etkinlikler yükleniyor...
+              </p>
             </div>
           </div>
         ) : (
@@ -227,6 +309,7 @@ export default function AdminEventsPage() {
             {/* Pagination Controls */}
             <div className="mt-6 flex items-center justify-between border-t border-[#DCDDD3] pt-4 text-xs font-medium text-stone-600">
               <div>Sayfa: {page}</div>
+
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -236,6 +319,7 @@ export default function AdminEventsPage() {
                 >
                   Önceki
                 </button>
+
                 <button
                   type="button"
                   disabled={events.length < 20 || isLoading}
@@ -251,6 +335,11 @@ export default function AdminEventsPage() {
 
         {/* Event Form Modal */}
         <EventFormModal
+          key={
+            isModalOpen
+              ? (editingEvent?.id ?? "new-event")
+              : "closed"
+          }
           isOpen={isModalOpen}
           event={editingEvent}
           onClose={() => {

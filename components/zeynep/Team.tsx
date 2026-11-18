@@ -1,7 +1,10 @@
-import { TEAM_MEMBERS, FAQ_ITEMS } from './team-data';
+"use client";
+
+import { TEAM_MEMBERS } from './team-data';
 import { TeamShowcase } from './TeamShowcase';
 import { FaqAccordion } from './FaqAccordion';
 import { Archivo } from "next/font/google";
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const headingFont = Archivo({
   subsets: ["latin"],
@@ -9,6 +12,13 @@ const headingFont = Archivo({
 });
 
 export default function Team() {
+  const { t } = useLanguage();
+
+  const localizedMembers = TEAM_MEMBERS.map((member) => ({
+    ...member,
+    role: t.team.memberRoles[member.id] || member.role,
+  }));
+
   return (
     <section
       id="team"
@@ -44,7 +54,7 @@ export default function Team() {
           id="team-section-heading"
           className={`${headingFont.className} mx-auto block max-w-5xl uppercase italic`}
         >
-          <span className="sr-only">Meet Our Team</span>
+          <span className="sr-only">{t.team.srOnlyTitle}</span>
           <span
             aria-hidden="true"
             className="news-ticker block overflow-hidden py-2 text-[#1E2A5A]"
@@ -57,7 +67,7 @@ export default function Team() {
                       key={i}
                       className="whitespace-nowrap pr-16 text-5xl font-semibold leading-none tracking-tight sm:text-6xl md:text-7xl"
                     >
-                      Meet Our Team
+                      {t.team.ticker}
                     </span>
                   ))}
                 </span>
@@ -68,18 +78,18 @@ export default function Team() {
       </header>
       {/* 2. Circular Animated Team Showcase */}
       <div className="mb-5 md:mb-6">
-        <TeamShowcase members={TEAM_MEMBERS} />
+        <TeamShowcase members={localizedMembers} />
       </div>
 
       {/* 3. FAQ Subsection */}
       <div className="border-t border-[#DCDDD3] pt-5 md:pt-6">
         <div className="mb-4 text-center">
           <h3 className="text-xl font-bold tracking-tight text-[#1E2A5A] sm:text-3xl">
-            FAQ
+            {t.team.faqTitle}
           </h3>
         </div>
 
-        <FaqAccordion items={FAQ_ITEMS} />
+        <FaqAccordion items={t.team.faqItems} />
       </div>
       </div>
     </section>

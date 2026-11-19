@@ -50,15 +50,23 @@ function getTimelineImage(
   }
 }
 
+function cleanLead(lead?: string | null): string | undefined {
+  if (!lead) return undefined;
+  return lead.replace(/^(Lead:\s*|Yürütücü:\s*)/i, "").trim();
+}
+
 export default function TimelineEventCard({
   event,
   isFirst = false,
 }: TimelineEventCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const isUpcoming =
     computeEventStatus(event.startsAt, event.endsAt) === "upcoming";
-  const displayDate = formatDisplayDate(event.startsAt);
+  const displayDate = formatDisplayDate(
+    event.startsAt,
+    locale === "tr" ? "tr-TR" : "en-US"
+  );
   const displayTime = formatDisplayTime(event.startsAt, event.endsAt);
   const timelineImage = getTimelineImage(event.id, t.events.timelineImages);
   const bgImageSrc = event.imagePath || timelineImage.src;
@@ -68,14 +76,13 @@ export default function TimelineEventCard({
     event.category === "WORKSHOP"
       ? t.events.categories.workshop
       : event.category === "TALK"
-      ? t.events.categories.talk
-      : t.events.categories.buildSession;
+        ? t.events.categories.talk
+        : t.events.categories.buildSession;
 
   return (
     <article
-      className={`timeline-scroll-card group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${
-        isFirst ? "origin-left" : "origin-center"
-      }`}
+      className={`timeline-scroll-card group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${isFirst ? "origin-left" : "origin-center"
+        }`}
     >
       {/* Scoped CSS for the subtle pulse animation matching FeaturedSessionCard */}
       <style>{`
@@ -230,7 +237,7 @@ export default function TimelineEventCard({
                   </svg>
                   <span className="truncate">
                     <strong className="font-semibold text-white/90">{t.events.card.leadLabel}</strong>{" "}
-                    {event.lead}
+                    {cleanLead(event.lead)}
                   </span>
                 </div>
               )}
@@ -248,9 +255,8 @@ export default function TimelineEventCard({
             >
               <span>{isExpanded ? t.events.card.showLess : t.events.card.showMore}</span>
               <svg
-                className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
+                className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

@@ -6,6 +6,7 @@ import EventFormModal from "@/components/admin/EventFormModal";
 import EventList from "@/components/admin/EventList";
 import {
   createAdminEvent,
+  deleteAdminEvent,
   fetchAdminEvents,
   updateAdminEvent,
 } from "@/components/admin/api";
@@ -198,6 +199,22 @@ export default function AdminEventsPage() {
     }
   };
 
+  const handleDelete = async (event: ClubEvent) => {
+    setSuccessMessage(null);
+    setErrorMessage(null);
+    try {
+      const result = await deleteAdminEvent(event.id);
+      if (!result.success) {
+        setErrorMessage(`Etkinlik silinemedi: ${result.error.message}`);
+        return;
+      }
+      setSuccessMessage(`"${event.title}" kalıcı olarak silindi.`);
+      await loadEvents(page > 1 && events.length === 1 ? page - 1 : page);
+    } catch {
+      setErrorMessage("Etkinlik silinemedi. Lütfen tekrar deneyin.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F3EC] text-[#171916]">
       <AdminHeader activeTab="events" />
@@ -304,6 +321,7 @@ export default function AdminEventsPage() {
               events={events}
               onEdit={handleOpenEditModal}
               onStatusChange={handleStatusChange}
+              onDelete={handleDelete}
             />
 
             {/* Pagination Controls */}

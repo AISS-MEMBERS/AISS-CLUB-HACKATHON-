@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   createApiErrorResponse,
+  deleteAdminEvent,
   isValidUuid,
   parseJsonBody,
   requireAdminAuth,
@@ -12,6 +13,27 @@ import {
 
 interface RouteParams {
   params: Promise<{ id: string }>;
+}
+
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  try {
+    await requireAdminAuth();
+    verifySameOrigin(request);
+    const { id } = await params;
+    if (!isValidUuid(id)) {
+      return NextResponse.json(
+        { success: false, error: { code: "INVALID_ID", message: "Invalid event ID." } },
+        { status: 400, headers: { "Cache-Control": "no-store" } }
+      );
+    }
+    await deleteAdminEvent(id);
+    return NextResponse.json(
+      { success: true, data: { deleted: true } },
+      { headers: { "Cache-Control": "no-store" } }
+    );
+  } catch (error) {
+    return createApiErrorResponse(error);
+  }
 }
 
 /**

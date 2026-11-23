@@ -153,6 +153,12 @@ export async function updateAdminEvent(
   });
 }
 
+export async function deleteAdminEvent(id: string): Promise<ApiResult<{ deleted: boolean }>> {
+  return requestJson<{ deleted: boolean }>(`/api/admin/events/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+}
+
 /**
  * Messages API Client
  */

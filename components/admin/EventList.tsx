@@ -10,12 +10,14 @@ interface EventListProps {
   events: ClubEvent[];
   onEdit: (event: ClubEvent) => void;
   onStatusChange: (id: string, status: PublicationStatus) => Promise<void>;
+  onDelete: (event: ClubEvent) => Promise<void>;
 }
 
 export default function EventList({
   events,
   onEdit,
   onStatusChange,
+  onDelete,
 }: EventListProps) {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
@@ -48,6 +50,16 @@ export default function EventList({
     setUpdatingId(id);
     try {
       await onStatusChange(id, status);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleDelete = async (event: ClubEvent) => {
+    if (!window.confirm(`"${event.title}" etkinliğini kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz.`)) return;
+    setUpdatingId(event.id);
+    try {
+      await onDelete(event);
     } finally {
       setUpdatingId(null);
     }
@@ -189,6 +201,16 @@ export default function EventList({
                           {isUpdating ? "..." : "Arşivden Çıkar"}
                         </button>
                       )}
+
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(event)}
+                        disabled={isUpdating}
+                        aria-label={`${event.title} etkinliğini sil`}
+                        className="rounded-md border border-rose-300 bg-white px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-rose-700"
+                      >
+                        {isUpdating ? "..." : "Sil"}
+                      </button>
                     </div>
                   </td>
                 </tr>

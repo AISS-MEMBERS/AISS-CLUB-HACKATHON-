@@ -247,3 +247,17 @@ export async function updateAdminEvent(
 
   return mapRowToClubEvent(updated as EventRow);
 }
+
+/** Permanently remove one event. Uploaded covers are retained for separate Storage cleanup. */
+export async function deleteAdminEvent(id: string): Promise<void> {
+  const client = await getSupabaseClient();
+  const { data, error } = await client
+    .from("events")
+    .delete()
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
+
+  if (error) throw new ApiError(503, "DATABASE_UNAVAILABLE", "Unable to delete the event.");
+  if (!data) throw new ApiError(404, "NOT_FOUND", "Event not found.");
+}

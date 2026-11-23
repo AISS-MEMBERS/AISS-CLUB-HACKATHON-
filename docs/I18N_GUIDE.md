@@ -47,8 +47,8 @@ The internationalization architecture is intentionally designed to be **lightwei
 - `useSyncExternalStore` keeps the initial client render aligned with the server before restoring the saved choice.
 
 ### 2.3 Server vs. Client Component Boundaries
-- **Server Components:** `app/page.tsx` and `app/layout.tsx` remain Server Components.
-- **Client Components:** Interactive section components that display localized text (`SiteHeader`, `Hero`, `About`, `Events`, `Team`, `Contact`, `Footer`) are marked with `"use client"`. They consume translations via:
+- **Server Components:** `app/page.tsx`, `app/join/page.tsx` and `app/layout.tsx` remain Server Components.
+- **Client Components:** Interactive section components that display localized text (`SiteHeader`, `Hero`, `About`, `Events`, `Team`, `Contact`, `Footer`, `JoinContent`, `NotFound`) are marked with `"use client"`. They consume translations via:
   ```tsx
   import { useLanguage } from "@/lib/i18n/LanguageContext";
 

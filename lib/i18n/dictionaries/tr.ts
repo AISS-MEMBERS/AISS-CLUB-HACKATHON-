@@ -125,6 +125,14 @@ export const tr: Dictionary = {
       "evt-3": "Yapay zeka etiği ve veri yönetişimi çerçevesi şematik diyagramı",
       default: "Yapay zeka teknik oturumu şematik diyagramı",
     },
+    states: {
+      errorTitle: "Akademik oturumlara şu anda ulaşılamıyor",
+      networkError: "Kulüp etkinlikleri yüklenirken ağ hatası oluştu.",
+      defaultError: (status: number) => `Etkinlikler yüklenemedi (HTTP ${status}).`,
+      retry: "Tekrar Dene",
+      emptyTitle: "Şu anda yayınlanmış oturum bulunmuyor",
+      emptyMessage: "Yaklaşan atölyeler, seminerler ve geliştirme oturumları için yakında tekrar kontrol edin.",
+    },
     featuredEvent: {
       id: "featured-1",
       title: "Yaklaşan Atölye: Transformer Mimarilerine Giriş",
@@ -280,12 +288,17 @@ export const tr: Dictionary = {
       errors: {
         nameRequired: "Lütfen adınızı ve soyadınızı girin.",
         nameMin: "Ad soyad en az 2 karakter olmalıdır.",
+        nameMax: "Ad soyad en fazla 100 karakter olabilir.",
         emailRequired: "Lütfen üniversite e-postanızı girin.",
         emailInvalid:
           "Lütfen geçerli bir üniversite e-posta adresi girin (örn. ad@universite.edu.tr).",
+        emailMax: "E-posta adresi en fazla 254 karakter olabilir.",
         interestRequired: "Lütfen bir ilgi alanı seçin.",
         messageRequired: "Lütfen mesajınızı girin.",
         messageMin: "Mesajınız en az 10 karakter olmalıdır.",
+        messageMax: "Mesajınız en fazla 3000 karakter olabilir.",
+        serverError: "Mesaj gönderilemedi. Lütfen tekrar deneyin.",
+        networkError: "Ağ hatası: Sunucuya bağlanılamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.",
       },
       submitting: "Gönderiliyor...",
       submit: "Mesaj Gönder",
@@ -303,5 +316,82 @@ export const tr: Dictionary = {
     copyright: "© 2026 AISS Kulübü. Tüm hakları saklıdır.",
     backToTop: "Başa dön",
     logoAlt: "AISS Kulübü Logosu",
+    footerAria: "Site Alt Bilgisi",
+    navAria: "Alt Bilgi Navigasyonu",
+  },
+  join: {
+    backToHome: "← AISS Ana Sayfa",
+    universityTag: "AISS · Üsküdar Üniversitesi",
+    title: "Kulübe Katıl.",
+    description:
+      "Bir sonraki projeniz bir toplulukla başlar. Üniversitenin SKS sistemi üzerinden resmi kulüp üyeliğinizi tamamlayın.",
+    readyCard: {
+      title: "Katılmaya hazır mısınız?",
+      sksButton: "Resmi SKS web sitesini aç ↗",
+      needHelp: "Katılmak için yardıma mı ihtiyacınız var? Adımları takip edin ↓",
+    },
+    option1: {
+      badge: "Seçenek 1 · Telefonunuzda",
+      title: "Üsküdar Uni uygulamasını kullanın",
+      platform: "iPhone & Android",
+      tapToEnlarge: "Büyütmek için görsele dokunun.",
+      welcome: {
+        title: "AISS'e hoş geldiniz.",
+        prompt: "Bizimle birlikte üretmek ister misiniz? Katıldıktan sonra, ",
+        contactLink: "ekibe kendinizi tanıtın",
+        targetTopic: " ve ne üzerinde çalışmak istediğinizi bize bildirin.",
+      },
+    },
+    steps: [
+      {
+        number: "01",
+        title: "Üsküdar Uni uygulamasını açın",
+        body: "iPhone veya Android'de üniversite uygulamasında oturum açın. Hızlı Menü'yü açıp SKS'yi seçin.",
+        image: "/join-guide/quick-menu.png",
+        alt: "SKS kutucuğunun yer aldığı Üsküdar Uni Hızlı Menüsü",
+        caption: "Hızlı Menü → SKS",
+      },
+      {
+        number: "02",
+        title: "Kulübümüzü bulun",
+        body: "Kulüplerde Ara bölümünde Yapay Zeka Kulübü veya AISS yazın. Yapay Zeka Kulübü'nü ve mor AI logomuzu arayın.",
+        image: "/join-guide/club-list.png",
+        alt: "SKS kulüp listesinde örnek Kayıtlı rozeti ile gösterilen Yapay Zeka Kulübü",
+        caption: "Katıldıktan sonra kulübümüz Kulüplerim altında görünür.",
+      },
+      {
+        number: "03",
+        title: "Katıl butonuna dokunun",
+        body: "Kulübü açıp Katıl'a dokunun. Üniversite yönergelerini takip edin. Onaylamak için Kayıtlı ibaresini veya kulübün Kulüplerim altında yer aldığını kontrol edin.",
+        image: null,
+        alt: "",
+        caption: "Resmi üyelik SKS'de tamamlanır.",
+      },
+    ],
+    option2: {
+      badge: "Seçenek 2 · Tarayıcınızda",
+      title: "SKS web sitesinden katılın",
+      steps: [
+        "Öğrenci Kulüpleri ↗ sayfasını açın.",
+        "Yapay Zeka Kulübü aramasını yapın. Numaralandırılmış sayfaları geziyorsanız 5. sayfayı kontrol edin; liste sırası değişebilir.",
+        "Kulübümüzü açın ve resmi üye formunu doldurun. Üniversite öğrenci numaranızı, üniversite e-postanızı ve şifrenizi talep edebilir.",
+        "Üniversitenin aydınlatma metnini okuyun, gerekli onayı işaretleyin ve Sign Up / Katıl butonuna basın.",
+      ],
+      imageAlt:
+        "Öğrenci numarası, e-posta ve şifre alanları boş olan resmi SKS Yapay Zeka Kulübü kayıt diyaloğu",
+      imageCaption:
+        "Üniversite web sitesinden referans. Etiketler dile göre farklılık gösterebilir. Büyütmek için dokunun.",
+    },
+    disclaimer: {
+      title: "Üyelik işlemleri yalnızca resmi üniversite kanallarında gerçekleşir.",
+      body: "Üniversite kimlik bilgilerinizi yalnızca resmi Üsküdar Uni uygulamasında veya resmi üniversite web sitesinde girin. AISS kesinlikle üniversite şifrenizi istemez. İletişim formumuzu göndermek sizi kulüp üyesi yapmaz.",
+      ariaLabel: "Üyelik bilgileri",
+    },
+  },
+  notFound: {
+    errorCode: "Hata 404",
+    title: "Sayfa Bulunamadı",
+    description: "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
+    returnHome: "Ana Sayfaya Dön",
   },
 };

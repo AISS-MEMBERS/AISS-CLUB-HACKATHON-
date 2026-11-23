@@ -10,7 +10,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 type FetchState =
   | { status: "loading" }
-  | { status: "error"; message: string }
+  | { status: "error"; message?: string; statusCode?: number }
   | { status: "empty" }
   | { status: "success"; events: ClubEvent[] };
 
@@ -36,11 +36,8 @@ export default function EventsData() {
         if (!isMounted) return;
 
         if (!response.ok || !json.success) {
-          const errorMsg =
-            !json.success && json.error?.message
-              ? json.error.message
-              : `Failed to load events (HTTP ${response.status}).`;
-          setState({ status: "error", message: errorMsg });
+          const customMsg = !json.success && json.error?.message ? json.error.message : undefined;
+          setState({ status: "error", message: customMsg, statusCode: response.status });
           return;
         }
 
@@ -54,7 +51,6 @@ export default function EventsData() {
         if (isMounted) {
           setState({
             status: "error",
-            message: "Network error occurred while fetching club events.",
           });
         }
       }
@@ -103,6 +99,12 @@ export default function EventsData() {
 
   // 2. ERROR STATE (distinguishes real failure, no hidden fake fallback)
   if (state.status === "error") {
+    const errorDescription =
+      state.message ||
+      (state.statusCode
+        ? t.events.states.defaultError(state.statusCode)
+        : t.events.states.networkError);
+
     return (
       <div
         role="alert"
@@ -110,15 +112,15 @@ export default function EventsData() {
         className="my-8 rounded-xl border border-rose-200 bg-rose-50/70 p-6 text-center text-[#1E2A5A]"
       >
         <p className="font-semibold text-rose-800">
-          Academic sessions currently unavailable
+          {t.events.states.errorTitle}
         </p>
-        <p className="mt-1 text-xs text-[#1E2A5A]/70">{state.message}</p>
+        <p className="mt-1 text-xs text-[#1E2A5A]/70">{errorDescription}</p>
         <button
           type="button"
           onClick={handleRetry}
           className="mt-4 inline-flex items-center rounded-lg border border-[#1E2A5A]/30 bg-[#1E2A5A] px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#283875] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E2A5A] cursor-pointer"
         >
-          Retry
+          {t.events.states.retry}
         </button>
       </div>
     );
@@ -129,10 +131,10 @@ export default function EventsData() {
     return (
       <div className="my-10 rounded-xl border border-[#DCDDD3] bg-white/40 p-8 text-center text-sm text-[#1E2A5A]/80">
         <p className="font-semibold text-[#1E2A5A]">
-          No published sessions at this time
+          {t.events.states.emptyTitle}
         </p>
         <p className="mt-1 text-xs text-[#1E2A5A]/70">
-          Check back soon for upcoming workshops, talks, and build sessions.
+          {t.events.states.emptyMessage}
         </p>
       </div>
     );
@@ -187,21 +189,19 @@ export default function EventsData() {
                 {/* Timeline horizontal connector track & indicator dot */}
                 <div className="relative mb-3 flex items-center">
                   <div
-                    className={`absolute top-1/2 h-0.5 -translate-y-1/2 bg-[#DCDDD3] ${
-                      index === 0
+                    className={`absolute top-1/2 h-0.5 -translate-y-1/2 bg-[#DCDDD3] ${index === 0
                         ? "left-0 -right-6"
                         : index === events.length - 1
-                        ? "-left-6 right-0"
-                        : "-left-6 -right-6"
-                    }`}
+                          ? "-left-6 right-0"
+                          : "-left-6 -right-6"
+                      }`}
                     aria-hidden="true"
                   />
                   <span
-                    className={`relative z-10 ml-6 h-3.5 w-3.5 rounded-full border-2 border-[#F5F3EC] ${
-                      isUpcoming
+                    className={`relative z-10 ml-6 h-3.5 w-3.5 rounded-full border-2 border-[#F5F3EC] ${isUpcoming
                         ? "bg-[#1E2A5A] ring-2 ring-[#1E2A5A] shadow-[0_0_8px_rgba(30,42,90,0.5)]"
                         : "bg-[#1E2A5A]"
-                    }`}
+                      }`}
                     aria-hidden="true"
                   />
                 </div>

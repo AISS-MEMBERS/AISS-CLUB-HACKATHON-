@@ -125,6 +125,14 @@ export const en: Dictionary = {
       "evt-3": "AI ethics and data governance framework schematic diagram",
       default: "AI technical session schematic diagram",
     },
+    states: {
+      errorTitle: "Academic sessions currently unavailable",
+      networkError: "Network error occurred while fetching club events.",
+      defaultError: (status: number) => `Failed to load events (HTTP ${status}).`,
+      retry: "Retry",
+      emptyTitle: "No published sessions at this time",
+      emptyMessage: "Check back soon for upcoming workshops, talks, and build sessions.",
+    },
     featuredEvent: {
       id: "featured-1",
       title: "Upcoming Workshop: Introduction to Transformer Architectures",
@@ -280,12 +288,17 @@ export const en: Dictionary = {
       errors: {
         nameRequired: "Please enter your full name.",
         nameMin: "Full name must be at least 2 characters.",
+        nameMax: "Full name cannot exceed 100 characters.",
         emailRequired: "Please enter your university email.",
         emailInvalid:
           "Please enter a valid university email address (e.g. name@university.edu).",
+        emailMax: "Email address cannot exceed 254 characters.",
         interestRequired: "Please select an area of interest.",
         messageRequired: "Please enter your message.",
         messageMin: "Message must be at least 10 characters.",
+        messageMax: "Message cannot exceed 3000 characters.",
+        serverError: "Failed to submit message. Please try again.",
+        networkError: "Network error: Could not connect to the server. Please check your connection and try again.",
       },
       submitting: "Sending...",
       submit: "Send Message",
@@ -303,5 +316,82 @@ export const en: Dictionary = {
     copyright: "© 2026 AISS Club. All rights reserved.",
     backToTop: "Back to top",
     logoAlt: "AISS Club Logo",
+    footerAria: "Site Footer",
+    navAria: "Footer Navigation",
+  },
+  join: {
+    backToHome: "← Back to AISS",
+    universityTag: "AISS · Üsküdar University",
+    title: "Join the Club.",
+    description:
+      "Your next project starts with a community. Complete your official club membership through the university's SKS system.",
+    readyCard: {
+      title: "Ready to join?",
+      sksButton: "Open official SKS website ↗",
+      needHelp: "Need help joining? Follow the steps ↓",
+    },
+    option1: {
+      badge: "Option 1 · On your phone",
+      title: "Use the Üsküdar Uni app",
+      platform: "iPhone & Android",
+      tapToEnlarge: "Tap the image to enlarge.",
+      welcome: {
+        title: "Welcome to AISS.",
+        prompt: "Want to build with us? After joining, ",
+        contactLink: "introduce yourself to the team",
+        targetTopic: " and tell us what you'd like to work on.",
+      },
+    },
+    steps: [
+      {
+        number: "01",
+        title: "Open Üsküdar Uni",
+        body: "Sign in to the university app on iPhone or Android. Open Quick Menu and choose SKS.",
+        image: "/join-guide/quick-menu.png",
+        alt: "Üsküdar Uni Quick Menu with the SKS tile",
+        caption: "Quick Menu → SKS",
+      },
+      {
+        number: "02",
+        title: "Find our club",
+        body: "In Search in Clubs, try Yapay Zeka Kulübü or AISS. Look for Artificial Intelligence Club and our purple AI logo.",
+        image: "/join-guide/club-list.png",
+        alt: "Artificial Intelligence Club in the SKS club list, showing an example Registered badge",
+        caption: "Our club appears under My Clubs after joining.",
+      },
+      {
+        number: "03",
+        title: "Tap Join",
+        body: "Open the club and tap Join. Follow any university prompts. Check for Registered or the club appearing in My Clubs to confirm.",
+        image: null,
+        alt: "",
+        caption: "Official membership is completed in SKS.",
+      },
+    ],
+    option2: {
+      badge: "Option 2 · In your browser",
+      title: "Join on the SKS website",
+      steps: [
+        "Open Öğrenci Kulüpleri ↗.",
+        "Search for Yapay Zeka Kulübü. If browsing the numbered pages, check page 5; the list order may change.",
+        "Open our club and complete the official member form. The university may request your student number, university email and university password.",
+        "Read the university's information notice, tick the required consent and press Sign Up / Katıl.",
+      ],
+      imageAlt:
+        "Official SKS Artificial Intelligence Club registration dialog with empty student number, email and password fields",
+      imageCaption:
+        "Reference from the university website. Labels can differ by language. Tap to enlarge.",
+    },
+    disclaimer: {
+      title: "Membership happens on official university channels.",
+      body: "Enter university credentials only in the official Üsküdar Uni app or on the official university website. AISS never asks for your university password. Sending our contact form does not register you as a club member.",
+      ariaLabel: "Membership information",
+    },
+  },
+  notFound: {
+    errorCode: "Error 404",
+    title: "Page Not Found",
+    description: "The page you are looking for does not exist or has been moved.",
+    returnHome: "Return to Main Page",
   },
 };

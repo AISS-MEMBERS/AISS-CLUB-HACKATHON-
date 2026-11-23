@@ -76,18 +76,21 @@ export function mapPatchInputToRow(
  * Formats an ISO datetime string for display in Europe/Istanbul timezone.
  * Returns month abbreviation in uppercase and day (e.g. "OCT 28").
  */
-export function formatDisplayDate(isoString: string): string {
+export function formatDisplayDate(
+  isoString: string,
+  locale: string = "en-US"
+): string {
   try {
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return isoString;
 
-    const formatter = new Intl.DateTimeFormat("en-US", {
+    const formatter = new Intl.DateTimeFormat(locale, {
       month: "short",
       day: "2-digit",
       timeZone: "Europe/Istanbul",
     });
 
-    // "Oct 28" -> "OCT 28"
+    // e.g. "Oct 28" -> "OCT 28" or "28 Eki" -> "28 EKİ"
     const formatted = formatter.format(date);
     return formatted.toUpperCase();
   } catch {

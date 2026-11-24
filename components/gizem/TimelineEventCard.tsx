@@ -58,9 +58,8 @@ export default function TimelineEventCard({
 
   return (
     <article
-      className={`timeline-scroll-card group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${
-        isFirst ? "origin-left" : "origin-center"
-      }`}
+      className={`timeline-scroll-card group relative overflow-hidden rounded-xl border border-[#DCDDD3]/30 bg-[#1E2A5A] p-5 sm:p-6 shadow-md transition-all duration-300 ease-out [@media(hover:hover)]:hover:scale-[1.04] [@media(hover:hover)]:hover:z-20 [@media(hover:hover)]:hover:shadow-[0_20px_40px_-8px_rgba(14,21,48,0.6)] flex flex-col justify-between flex-1 w-full min-h-[350px] sm:min-h-[380px] ${isFirst ? "origin-left" : "origin-center"
+        }`}
     >
       {/* Scoped CSS for the subtle pulse animation matching FeaturedSessionCard */}
       <style>{`
@@ -159,7 +158,10 @@ export default function TimelineEventCard({
             {event.title}
           </h4>
 
-          <p className="timeline-copy text-xs sm:text-sm leading-relaxed text-slate-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+          <p
+            className={`timeline-copy text-xs sm:text-sm leading-relaxed text-slate-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ${isExpanded ? "" : "line-clamp-3"
+              }`}
+          >
             {event.description}
           </p>
         </div>
@@ -230,9 +232,8 @@ export default function TimelineEventCard({
             >
               <span>{isExpanded ? "Show less" : "Show more"}</span>
               <svg
-                className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
+                className={`h-3.5 w-3.5 text-white transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
